@@ -17,6 +17,16 @@ namespace Capstone.Classes
         Exit // BYE NOW.
     }
 
+    interface IUIManager
+    {
+        decimal CurrentBalance { get; set; }
+        VendingMachineItem CurrentSelection { get; }
+
+        UIAction PrintMainMenu();
+        UIAction PrintPurchasingMenu();
+        UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items);
+    }
+
     public class UserInterface
     {
         private VendingMachine vendingMachine;
@@ -48,18 +58,14 @@ namespace Capstone.Classes
                         action = uiManager.PrintPurchasingMenu();
                         break;
                     case UIAction.DisplayItems:
-                        //action = uiManager.PrintProductSelectionMenu()
-                        //break;
+                        action = uiManager.PrintProductSelectionMenu(new Dictionary<ItemType, VendingMachineItem[]> { { ItemType.Candy, new VendingMachineItem[10] { null, null, null, null, null, null, null, null, null, null } } });
+                        break;
                     default:
                         action = UIAction.MainMenu;
                         break;
-
                 }
-                Console.SetCursorPosition(1, Console.WindowHeight - 1);
-                Console.Write("Last Action Taken: " + action + "\t\t");
             }
-
+            Console.SetCursorPosition(1, Console.WindowHeight - 1);
         }
-
     }
 }
