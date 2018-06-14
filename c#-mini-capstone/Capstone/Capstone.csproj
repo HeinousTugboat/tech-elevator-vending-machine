@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ConsoleManager.cs" />
+    <Compile Include="Classes\DataManager.cs" />
     <Compile Include="Classes\UserInterface.cs" />
     <Compile Include="Classes\VendingMachine.cs" />
     <Compile Include="Classes\VendingMachineItem.cs" />
