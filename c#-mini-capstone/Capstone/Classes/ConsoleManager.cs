@@ -292,24 +292,36 @@ namespace Capstone.Classes
             int selectedRow = 0;
             int selectedColumn = 0;
 
-            ProductBoxOutput(2, 2, "Potato Crisps", 3.05m);
-            ProductBoxOutput(2, 21, "Stackers", 1.45m);
-            ProductBoxOutput(8, 2, "Grain Waves", 2.75m);
-            //SetCursorPosition(2, 2);
-            //WriteLine("\u2554\u2550\u2550\u2557");
-            //WriteLine("\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
-            //WriteLine("\u2502                 \u2502");
-            //WriteLine("\u2502  Potato Crisps  \u2502");
-            //WriteLine("\u2502      $3.05      \u2502");
-            //WriteLine("\u2502                 \u2502");
-            //WriteLine("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
-            //WriteLine();
+            // Testing ideas for UI.
+            SetColor(true);
+            int top = 1;
+            int left = 2;
+            ProductBoxOutput(top, left, "Potato Crisps", 3.05m);
+            SetColor();
+            left += "Potato Crisps".Length + 7;
+            ProductBoxOutput(top, left, "Stackers", 1.45m);
+            left += "Stackers".Length + 7;
+            ProductBoxOutput(top, left, "Grain Waves", 2.75m);
+            left += "Grain Waves".Length + 7;
+            ProductBoxOutput(top, left, "Cloud Popcorn", 3.65m);
+            left = 2;
+            top += 6;
+            ProductBoxOutput(top, left, "Moonpie", 1.80m);
+            left += "Moonpie".Length + 7;
+            ProductBoxOutput(top, left, "Cowtales", 1.50m);
+            left += "Cowtales".Length + 7;
+            ProductBoxOutput(top, left, "Wonka Bar", 1.50m);
+            left += "Wonka Bar".Length + 7;
+            ProductBoxOutput(top, left, "Crunchie", 1.75m);
+
+            LastAction = UIAction.MainMenu;
+            // End idea test.
+
             bool isCurrentlyInMenu = true;
             ConsoleKeyInfo keyPress;
 
             while (isCurrentlyInMenu)
             {
-
                 keyPress = ReadKey(true);
                 switch (keyPress.Key)
                 {
@@ -338,6 +350,10 @@ namespace Capstone.Classes
                             selectedColumn = 0;
                         }
                         break;
+                    case ConsoleKey.Q:
+                        LastAction = UIAction.Exit;
+                        isCurrentlyInMenu = false;
+                        break;
                     case ConsoleKey.Enter:
                     case ConsoleKey.Escape:
                     case ConsoleKey.Spacebar:
@@ -345,8 +361,7 @@ namespace Capstone.Classes
                         break;
                 }
             }
-
-            LastAction = UIAction.MainMenu;
+            
             return LastAction;
         }
 
