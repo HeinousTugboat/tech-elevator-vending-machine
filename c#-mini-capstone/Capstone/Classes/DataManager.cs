@@ -18,13 +18,28 @@ namespace Capstone.Classes
         void GenerateSalesReport(List<VendingMachineTransaction> transactions);
     }
 
-    public class DataManager //: IDataManager
+    public class DataManager : IDataManager
     {
         private string LogFile { get; }
         public DataManager(string logFile)
         {
             LogFile = logFile;
             // Print out vending machine starting up in log.
+        }
+
+        public List<VendingMachineItem> LoadItems(string filename)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GenerateSalesReport(List<VendingMachineTransaction> transactions)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Capstone.Classes
         List<VendingMachineTransaction> GetAllTransactions();
     }
 
-    public class VendingMachine //: IVendingMachine
+    public class VendingMachine : IVendingMachine
     {
         private Dictionary<ItemType, VendingMachineItem[]> StockList { get; }
         private List<VendingMachineTransaction> TransactionLog { get; }
@@ -32,5 +32,34 @@ namespace Capstone.Classes
             // Assign items to StockList
         }
 
+        public VendingMachineTransaction FeedMoney(int amountToAdd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VendingMachineTransaction FinishTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public VendingMachineTransaction PurchaseItem(ItemType type, int slot)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VendingMachineItem CheckItem(ItemType type, int slot)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<ItemType, VendingMachineItem[]> GetAllItems()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<VendingMachineTransaction> GetAllTransactions()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

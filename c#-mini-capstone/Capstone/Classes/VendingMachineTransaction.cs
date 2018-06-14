@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Capstone.Classes
 {
-    public enum ActionType
+    public enum TransactionType
     {
         FeedMoney,
         GiveChange,
@@ -14,20 +14,20 @@ namespace Capstone.Classes
     }
     public struct VendingMachineTransaction
     {
-        public ActionType Action { get; }
+        public TransactionType Type { get; }
         public DateTime Timestamp { get; }
         public VendingMachineItem Item { get; }
         public decimal Amount { get; }
 
-        public VendingMachineTransaction(ActionType action, decimal amount) : 
-            this(action, amount, null) { }
+        public VendingMachineTransaction(TransactionType type, decimal amount) : 
+            this(type, amount, null) { }
 
-        public VendingMachineTransaction(ActionType action, VendingMachineItem item) :
-            this(action, item.Price, item) { }
+        public VendingMachineTransaction(TransactionType type, VendingMachineItem item) :
+            this(type, item.Price, item) { }
 
-        public VendingMachineTransaction(ActionType action, decimal amount, VendingMachineItem item)
+        public VendingMachineTransaction(TransactionType type, decimal amount, VendingMachineItem item)
         {
-            Action = action;
+            Type = type;
             Amount = amount;
             Item = item;
             Timestamp = DateTime.Now;
@@ -35,7 +35,7 @@ namespace Capstone.Classes
 
         public override string ToString()
         {
-            return $"{Timestamp} {Action} {Amount.ToString("C")}";
+            return $"{Timestamp} {Type} {Amount.ToString("C")}";
         }
     }
 }
