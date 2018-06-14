@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace Capstone.Classes
 {
+    enum UIAction
+    {
+        FeedMoney, // User wants to add money
+        DisplayItems, // User wants to see product selection grid
+        SelectProduct, // User has selected a product on the UI
+        PurchaseItem, // User wants to purchase currently selected product
+        FinishTransaction, // User is done, wants out, screw you
+        Exit // BYE NOW.
+    }
+
     public class UserInterface
     {
         private VendingMachine vendingMachine;
