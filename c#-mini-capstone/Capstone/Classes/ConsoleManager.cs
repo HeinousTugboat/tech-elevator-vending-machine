@@ -29,6 +29,8 @@ namespace Capstone.Classes
         // Default window colors, can be whatever. Normally White on Black.
         private ConsoleColor baseFG = White;
         private ConsoleColor baseBG = Black;
+        private ConsoleColor hiliteFG = Green;
+        private ConsoleColor hiliteBG = Black;
 
         public ConsoleManager()
         {
@@ -63,12 +65,12 @@ namespace Capstone.Classes
         }
 
         // Sets current color based on BaseBG/FG.
-        private void SetColor(bool invert = false)
+        private void SetColor(bool hilite = false)
         {
-            if (invert)
+            if (hilite)
             {
-                ForegroundColor = baseBG;
-                BackgroundColor = baseFG;
+                ForegroundColor = hiliteFG;
+                BackgroundColor = hiliteBG;
             }
             else
             {
@@ -97,16 +99,18 @@ namespace Capstone.Classes
         public UIAction PrintMainMenu()
         {
             int selectedOption = 0;
-            bool inMenu = true;
+            bool isCurrentlyInMenu = true;
             ConsoleKeyInfo keyPress;
+            PrintBalance();
 
-            while (inMenu)
+            while (isCurrentlyInMenu)
             {
                 MainMenuOutput(selectedOption);
                 keyPress = ReadKey(true);
 
                 switch (keyPress.Key)
                 {
+                    // Navigate menu using up/down arrow, select with enter/escape/space
                     case ConsoleKey.UpArrow:
                         selectedOption--;
                         if (selectedOption < 0)
@@ -121,30 +125,31 @@ namespace Capstone.Classes
                             selectedOption = 0;
                         }
                         break;
+                    case ConsoleKey.Enter:
+                    case ConsoleKey.Escape:
+                    case ConsoleKey.Spacebar:
+                        isCurrentlyInMenu = false;
+                        break;
+
+                    // Select specific menu choice with 1/2/3
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         selectedOption = 0;
-                        inMenu = false;
+                        isCurrentlyInMenu = false;
                         break;
                     case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         selectedOption = 1;
-                        inMenu = false;
+                        isCurrentlyInMenu = false;
                         break;
                     case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         selectedOption = 2;
-                        inMenu = false;
-                        break;
-                    case ConsoleKey.Enter:
-                    case ConsoleKey.Escape:
-                    case ConsoleKey.Spacebar:
-                        inMenu = false;
+                        isCurrentlyInMenu = false;
                         break;
                 }
             }
 
-            PrintBalance();
             if (selectedOption == 0)
             {
                 return UIAction.DisplayItems;

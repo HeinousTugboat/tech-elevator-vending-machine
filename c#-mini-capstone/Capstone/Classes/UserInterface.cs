@@ -56,8 +56,8 @@ namespace Capstone.Classes
 
                 }
                 Console.SetCursorPosition(1, Console.WindowHeight - 1);
+                Console.Write("Last Action Taken: " + action + "\t\t");
             }
-            Console.Write("Last Action Taken: " + action + "\t\t");
 
         }
 
