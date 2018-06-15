@@ -27,19 +27,47 @@ namespace Capstone.Classes
         public decimal CurrentBalance { get; private set; }
 
         // Constructor
-        public VendingMachine(List<VendingMachineItem> list)
+        public VendingMachine(List<VendingMachineItem> items)
         {
-            // Assign items to StockList
+            StockList = new Dictionary<ItemType, VendingMachineItem[]>();
+            StockList.Add(ItemType.Candy, new VendingMachineItem[10]);
+            StockList.Add(ItemType.Chip, new VendingMachineItem[10]);
+            StockList.Add(ItemType.Drink, new VendingMachineItem[10]);
+            StockList.Add(ItemType.Gum, new VendingMachineItem[10]);
+
+            foreach (VendingMachineItem item in items)
+            {
+                StockList[item.Type][item.Slot] = item;
+            }
         }
 
         // Methods
-        public VendingMachineTransaction FeedMoney(int amountToAdd)
+        public Dictionary<ItemType, VendingMachineItem[]> GetAllItems()
         {
-            CurrentBalance += amountToAdd;
-            return new VendingMachineTransaction(TransactionType.FeedMoney, 20, true);
+            return StockList;
         }
 
-        public VendingMachineTransaction FinishTransaction()
+        public VendingMachineTransaction FeedMoney(int amountToAdd)
+        {
+            List<int> validBills = new List<int> { 1, 2, 5, 10, 20 };
+            bool isValid = validBills.Contains(amountToAdd);
+            VendingMachineTransaction result;
+
+            if (!isValid)
+            {
+                result = new VendingMachineTransaction(TransactionType.InvalidBill, 0);
+                amountToAdd = 0;
+            }
+            else
+            {
+                result = new VendingMachineTransaction(TransactionType.FeedMoney, amountToAdd);
+                CurrentBalance += amountToAdd;
+            }
+
+            return result;
+        }
+
+        public VendingMachineItem CheckItem(ItemType type, int slot)
         {
             throw new NotImplementedException();
         }
@@ -49,12 +77,7 @@ namespace Capstone.Classes
             throw new NotImplementedException();
         }
 
-        public VendingMachineItem CheckItem(ItemType type, int slot)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<ItemType, VendingMachineItem[]> GetAllItems()
+        public VendingMachineTransaction FinishTransaction()
         {
             throw new NotImplementedException();
         }

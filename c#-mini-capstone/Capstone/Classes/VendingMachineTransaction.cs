@@ -10,7 +10,8 @@ namespace Capstone.Classes
     {
         FeedMoney,
         GiveChange,
-        PurchaseItem
+        PurchaseItem,
+        InvalidBill
     }
     public struct VendingMachineTransaction
     {
@@ -18,20 +19,18 @@ namespace Capstone.Classes
         public DateTime Timestamp { get; }
         public VendingMachineItem Item { get; }
         public decimal Amount { get; }
-        public bool IsValid { get; }
 
-        public VendingMachineTransaction(TransactionType type, decimal amount, bool isValid) : 
-            this(type, amount, null, isValid) { }
+        public VendingMachineTransaction(TransactionType type, decimal amount) : 
+            this(type, amount, null) { }
 
-        public VendingMachineTransaction(TransactionType type, VendingMachineItem item, bool isValid) :
-            this(type, item.Price, item, isValid) { }
+        public VendingMachineTransaction(TransactionType type, VendingMachineItem item) :
+            this(type, item.Price, item) { }
 
-        public VendingMachineTransaction(TransactionType type, decimal amount, VendingMachineItem item, bool isValid)
+        public VendingMachineTransaction(TransactionType type, decimal amount, VendingMachineItem item)
         {
             Type = type;
             Amount = amount;
             Item = item;
-            IsValid = isValid;
             Timestamp = DateTime.Now;
         }
 
