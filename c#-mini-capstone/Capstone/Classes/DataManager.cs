@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Capstone.Classes
 {
-    interface IDataManager
+    public interface IDataManager
     {
         // Called by UserInterface to load items to build VendingMachine with
         List<VendingMachineItem> LoadItems(string filename);
@@ -21,17 +21,39 @@ namespace Capstone.Classes
 
     public class DataManager : IDataManager
     {
+        private string LogFile { get; }
+
         public DataManager(string logFile)
         {
             LogFile = logFile;
             // Print out vending machine starting up in log.
         }
 
-        private string LogFile { get; }
-
         public List<VendingMachineItem> LoadItems(string filename)
         {
-            throw new NotImplementedException();
+            List<VendingMachineItem> items = new List<VendingMachineItem>();
+            try
+            {
+                using (StreamReader sr = new StreamReader(filename))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string[] line = sr.ReadLine().Split('|');
+                        ItemType type = (ItemType)line[0][0];
+                        int slot = int.Parse(line[0].Substring(1));
+                        string name = line[1];
+                        decimal price = decimal.Parse(line[2]);
+
+                        VendingMachineItem item = new VendingMachineItem(name, price, type, slot);
+                        items.Add(item);
+                    }
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine($"Unable to load file: {e.Message}");
+            }
+            return items;
         }
 
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)

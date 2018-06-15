@@ -11,8 +11,12 @@ namespace Capstone
     {
         static void Main(string[] args)
         {
-            VendingMachine vendingMachine = new VendingMachine(new List<VendingMachineItem> { });
-            UserInterface userInterface = new UserInterface(vendingMachine);
+            IDataManager dataManager = new DataManager("Log.txt");
+            List<VendingMachineItem> items = dataManager.LoadItems("vendingmachine.csv");
+            VendingMachine vendingMachine = new VendingMachine(items);
+            IUIManager uiManager = new ConsoleManager();
+            
+            UserInterface userInterface = new UserInterface(vendingMachine, dataManager, uiManager);
             userInterface.RunInterface();
 
 
