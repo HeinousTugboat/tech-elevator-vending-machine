@@ -488,6 +488,16 @@ namespace Capstone.Classes
             return LastAction;
         }
 
+        public void PrintPurchaseConfirmation(VendingMachineItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PrintChangeConfirmation(decimal changeDispensed)
+        {
+            throw new NotImplementedException();
+        }
+
         // WHAT DOES YOU MANAGE?
         // Console. Duh.
         // Print Main Menu
