@@ -21,20 +21,22 @@ namespace Capstone.Classes
 
     public class VendingMachine : IVendingMachine
     {
+        // Properties
         private Dictionary<ItemType, VendingMachineItem[]> StockList { get; }
         private List<VendingMachineTransaction> TransactionLog { get; }
         public decimal CurrentBalance { get; private set; }
 
-        //public VendingMachine() : this(new List<VendingMachineItem>()) { }
-
+        // Constructor
         public VendingMachine(List<VendingMachineItem> list)
         {
             // Assign items to StockList
         }
 
+        // Methods
         public VendingMachineTransaction FeedMoney(int amountToAdd)
         {
-            throw new NotImplementedException();
+            CurrentBalance += amountToAdd;
+            return new VendingMachineTransaction(TransactionType.FeedMoney, 20, true);
         }
 
         public VendingMachineTransaction FinishTransaction()
