@@ -25,10 +25,10 @@ namespace Capstone.Classes
         public VendingMachineItem CurrentSelection { get; private set; }
 
         // Default window colors, can be whatever. Normally White on Black.
-        private readonly ConsoleColor baseFG = White;
-        private readonly ConsoleColor baseBG = Black;
-        private readonly ConsoleColor hiliteFG = Green;
-        private readonly ConsoleColor hiliteBG = Black;
+        private readonly ConsoleColor BaseFG = White;
+        private readonly ConsoleColor BaseBG = Black;
+        private readonly ConsoleColor HiliteFG = Green;
+        private readonly ConsoleColor HiliteBG = Black;
 
         // Added for diagnostic purposes.
         private UIAction LastAction;
@@ -36,8 +36,8 @@ namespace Capstone.Classes
         public ConsoleManager()
         {
             // Setting our console colors to our default ones.
-            BackgroundColor = baseBG;
-            ForegroundColor = baseFG;
+            BackgroundColor = BaseBG;
+            ForegroundColor = BaseFG;
 
             // Resetting the buffer and window so that we 
             //   a.) don't have any scroll bar and 
@@ -108,20 +108,22 @@ namespace Capstone.Classes
         {
             if (hilite)
             {
-                SetColor(hiliteFG, hiliteBG);
+                SetColor(HiliteFG, HiliteBG);
             }
             else
             {
-                SetColor(baseFG, baseBG);
+                SetColor(BaseFG, BaseBG);
             }
         }
 
+        // Sets arbitrary colors, defaults background to Black.
         private void SetColor(ConsoleColor fg, ConsoleColor bg = Black)
         {
             ForegroundColor = fg;
             BackgroundColor = bg;
         }
 
+        // Actually Prints the main menu.
         private void MainMenuOutput(int selectedOption = 0)
         {
             SetCursorPosition(2, 2);
@@ -140,6 +142,7 @@ namespace Capstone.Classes
 
         }
 
+        // Method called by UserInterface to get action from main menu.
         public UIAction PrintMainMenu()
         {
             PrintBalance();
@@ -207,6 +210,7 @@ namespace Capstone.Classes
             return LastAction;
         }
 
+        // Actually prints the purchasing menu.
         private void PurchasingMenuOutput(int selectedOption = 0)
         {
             SetCursorPosition(2, 2);
@@ -224,6 +228,7 @@ namespace Capstone.Classes
             SetColor();
         }
 
+        // Method called by UserInterface to get action from purchasing menu.
         public UIAction PrintPurchasingMenu()
         {
             PrintBalance();
@@ -291,44 +296,7 @@ namespace Capstone.Classes
             return LastAction;
         }
 
-        //{
-        //    SetCursorPosition(2, 2);
-        //    SetColor(selectedOption == 0);
-        //    Write("(1) Feed Money ");
-
-        //    SetCursorPosition(2, 3);
-        //    SetColor(selectedOption == 1);
-        //    Write("(2) Select Product ");
-
-        //    SetCursorPosition(2, 4);
-        //    SetColor(selectedOption == 2);
-        //    Write("(3) Finish Transaction ");
-
-        //    SetColor();
-        //}
-
-        private void ProductBoxOutput(int row, int col, string name, decimal price)
-        {
-            string border = new string('\u2500', name.Length + 2);
-            string spaces = new string(' ', name.Length + 2);
-            string priceString = price.ToString("C");
-            int priceOffset = (name.Length + 1) / 2 - priceString.Length / 2;
-            int priceSpace = name.Length + 2 - priceString.Length - priceOffset;
-
-            SetCursorPosition(col, row);
-            Write("\u250C" + border + "\u2510");
-            SetCursorPosition(col, row + 1);
-            Write("\u2502" + spaces + "\u2502");
-            SetCursorPosition(col, row + 2);
-            Write("\u2502 " + name + " \u2502");
-            SetCursorPosition(col, row + 3);
-            Write("\u2502" + new string(' ', priceOffset) + priceString + new string(' ', priceSpace) + "\u2502");
-            SetCursorPosition(col, row + 4);
-            Write("\u2502" + spaces + "\u2502");
-            SetCursorPosition(col, row + 5);
-            Write("\u2514" + border + "\u2518");
-        }
-
+        // Method called by UserInterface to get action from selection menu.
         public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items)
         {
             PrintBalance();
@@ -411,7 +379,7 @@ namespace Capstone.Classes
                 keyPress = ReadKey(true);
                 switch (keyPress.Key)
                 {
-                    // Navigate menu using up/down arrow, select with enter/escape/space
+                    // Navigate menu using up/down arrow, select with enter/space, bail to main menu with escape, select column/row with letter/number
                     case ConsoleKey.UpArrow:
                         if (--selectedRow < 0)
                         {
