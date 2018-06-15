@@ -20,21 +20,27 @@ namespace Capstone.Classes
 
     public class DataManager : IDataManager
     {
+        string directory = Environment.CurrentDirectory;
+        string Path = @"C:\Users\afulton\team6-c-week4-pair-exercises\c#-mini-capstone\Capstone";
+        string filename = @"Log.txt";
+        string fullPath = Path.Combine(directory, filename);
         private string LogFile { get; }
         public DataManager(string logFile)
+        using StreamWriter sw = new StreamWriter(filename, false);
         {
             LogFile = logFile;
             // Print out vending machine starting up in log.
         }
 
         public List<VendingMachineItem> LoadItems(string filename)
-        {
+        { 
             throw new NotImplementedException();
         }
 
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
         {
             throw new NotImplementedException();
+
         }
 
         public void GenerateSalesReport(List<VendingMachineTransaction> transactions)
