@@ -25,10 +25,10 @@ namespace Capstone.Classes
         public VendingMachineItem CurrentSelection { get; private set; }
 
         // Default window colors, can be whatever. Normally White on Black.
-        private readonly ConsoleColor baseFG = White;
-        private readonly ConsoleColor baseBG = Black;
-        private readonly ConsoleColor hiliteFG = Green;
-        private readonly ConsoleColor hiliteBG = Black;
+        private readonly ConsoleColor BaseFG = White;
+        private readonly ConsoleColor BaseBG = Black;
+        private readonly ConsoleColor HiliteFG = Green;
+        private readonly ConsoleColor HiliteBG = Black;
 
         // Added for diagnostic purposes.
         private UIAction LastAction;
@@ -36,8 +36,8 @@ namespace Capstone.Classes
         public ConsoleManager()
         {
             // Setting our console colors to our default ones.
-            BackgroundColor = baseBG;
-            ForegroundColor = baseFG;
+            BackgroundColor = BaseBG;
+            ForegroundColor = BaseFG;
 
             // Resetting the buffer and window so that we 
             //   a.) don't have any scroll bar and 
@@ -64,11 +64,29 @@ namespace Capstone.Classes
             Clear();
 
             SetCursorPosition(1, WindowHeight - 1);
-            Write("Current Action: " + LastAction + "\t\t");
+            SetColor(Gray);
+            Write("Action: ");
+            SetColor(White);
+            Write(LastAction);
 
-            string balance = "Currently Available: " + CurrentBalance.ToString("C");
-            SetCursorPosition(WindowWidth - balance.Length - 1, WindowHeight - 1);
+            string balance = "   Available: ";
+            string balanceAmount = CurrentBalance.ToString("C");
+            string selection = "";
+            string selectionName = "";
+            if (CurrentSelection != null)
+            {
+                selection = "Selection: ";
+                selectionName = CurrentSelection.Name;
+            }
+            SetCursorPosition(WindowWidth - (balance.Length + 1 + balanceAmount.Length + selection.Length + selectionName.Length), WindowHeight - 1);
+            SetColor(Gray);
+            Write(selection);
+            SetColor(White);
+            Write(selectionName);
+            SetColor(Gray);
             Write(balance);
+            SetColor(White);
+            Write(balanceAmount);
 
             SetColor(DarkGreen);
 
@@ -90,20 +108,22 @@ namespace Capstone.Classes
         {
             if (hilite)
             {
-                SetColor(hiliteFG, hiliteBG);
+                SetColor(HiliteFG, HiliteBG);
             }
             else
             {
-                SetColor(baseFG, baseBG);
+                SetColor(BaseFG, BaseBG);
             }
         }
 
+        // Sets arbitrary colors, defaults background to Black.
         private void SetColor(ConsoleColor fg, ConsoleColor bg = Black)
         {
             ForegroundColor = fg;
             BackgroundColor = bg;
         }
 
+        // Actually Prints the main menu.
         private void MainMenuOutput(int selectedOption = 0)
         {
             SetCursorPosition(2, 2);
@@ -122,6 +142,7 @@ namespace Capstone.Classes
 
         }
 
+        // Method called by UserInterface to get action from main menu.
         public UIAction PrintMainMenu()
         {
             PrintBalance();
@@ -189,6 +210,7 @@ namespace Capstone.Classes
             return LastAction;
         }
 
+        // Actually prints the purchasing menu.
         private void PurchasingMenuOutput(int selectedOption = 0)
         {
             SetCursorPosition(2, 2);
@@ -206,6 +228,7 @@ namespace Capstone.Classes
             SetColor();
         }
 
+        // Method called by UserInterface to get action from purchasing menu.
         public UIAction PrintPurchasingMenu()
         {
             PrintBalance();
@@ -273,80 +296,17 @@ namespace Capstone.Classes
             return LastAction;
         }
 
-        //{
-        //    SetCursorPosition(2, 2);
-        //    SetColor(selectedOption == 0);
-        //    Write("(1) Feed Money ");
-
-        //    SetCursorPosition(2, 3);
-        //    SetColor(selectedOption == 1);
-        //    Write("(2) Select Product ");
-
-        //    SetCursorPosition(2, 4);
-        //    SetColor(selectedOption == 2);
-        //    Write("(3) Finish Transaction ");
-
-        //    SetColor();
-        //}
-
-        private void ProductBoxOutput(int row, int col, string name, decimal price)
-        {
-            string border = new string('\u2500', name.Length + 2);
-            string spaces = new string(' ', name.Length + 2);
-            string priceString = price.ToString("C");
-            int priceOffset = (name.Length + 1) / 2 - priceString.Length / 2;
-            int priceSpace = name.Length + 2 - priceString.Length - priceOffset;
-
-            SetCursorPosition(col, row);
-            Write("\u250C" + border + "\u2510");
-            SetCursorPosition(col, row + 1);
-            Write("\u2502" + spaces + "\u2502");
-            SetCursorPosition(col, row + 2);
-            Write("\u2502 " + name + " \u2502");
-            SetCursorPosition(col, row + 3);
-            Write("\u2502" + new string(' ', priceOffset) + priceString + new string(' ', priceSpace) + "\u2502");
-            SetCursorPosition(col, row + 4);
-            Write("\u2502" + spaces + "\u2502");
-            SetCursorPosition(col, row + 5);
-            Write("\u2514" + border + "\u2518");
-        }
-
+        // Method called by UserInterface to get action from selection menu.
         public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items)
         {
             PrintBalance();
             int selectedRow = 0;
             int selectedColumn = 0;
-            int totalRows = 19;
-            int totalColumns = 2;
+            int totalRows = 19; // 20 rows, indexed at 0.
+            int totalColumns = 1; // 2 columns, indexed at 0.
             int tablePadding = 6;
             int currentRow = 0;
-
-
-
-            // Testing ideas for UI.
-            //SetColor(true);
-            //int top = 1;
-            //int left = 2;
-            //ProductBoxOutput(top, left, "Potato Crisps", 3.05m);
-            //SetColor();
-            //left += "Potato Crisps".Length + 7;
-            //ProductBoxOutput(top, left, "Stackers", 1.45m);
-            //left += "Stackers".Length + 7;
-            //ProductBoxOutput(top, left, "Grain Waves", 2.75m);
-            //left += "Grain Waves".Length + 7;
-            //ProductBoxOutput(top, left, "Cloud Popcorn", 3.65m);
-            //left = 2;
-            //top += 6;
-            //ProductBoxOutput(top, left, "Moonpie", 1.80m);
-            //left += "Moonpie".Length + 7;
-            //ProductBoxOutput(top, left, "Cowtales", 1.50m);
-            //left += "Cowtales".Length + 7;
-            //ProductBoxOutput(top, left, "Wonka Bar", 1.50m);
-            //left += "Wonka Bar".Length + 7;
-            //ProductBoxOutput(top, left, "Crunchie", 1.75m);
-
-            LastAction = UIAction.MainMenu;
-            // End idea test.
+            VendingMachineItem selectedItem = null;
 
             bool isCurrentlyInMenu = true;
             ConsoleKeyInfo keyPress;
@@ -361,14 +321,15 @@ namespace Capstone.Classes
                     {
                         case ItemType.Candy:
                         case ItemType.Chip:
+                            currentRow = -1;
                             CursorTop = 1;
                             break;
                         case ItemType.Drink:
                         case ItemType.Gum:
+                            currentRow = 9;
                             CursorTop = 13;
                             break;
                     }
-                    currentRow = 0;
 
                     foreach (VendingMachineItem item in itemList.Value)
                     {
@@ -388,8 +349,15 @@ namespace Capstone.Classes
                         }
 
                         CursorTop++;
+
+                        if (activeColumn && activeRow)
+                        {
+                            selectedItem = item;
+                        }
+
                         if (item != null)
                         {
+
                             SetColor(activeColumn && activeRow);
                             Write(item);
                         }
@@ -411,7 +379,7 @@ namespace Capstone.Classes
                 keyPress = ReadKey(true);
                 switch (keyPress.Key)
                 {
-                    // Navigate menu using up/down arrow, select with enter/escape/space
+                    // Navigate menu using up/down arrow, select with enter/space, bail to main menu with escape, select column/row with letter/number
                     case ConsoleKey.UpArrow:
                         if (--selectedRow < 0)
                         {
@@ -436,19 +404,98 @@ namespace Capstone.Classes
                             selectedColumn = 0;
                         }
                         break;
+                    case ConsoleKey.A:
+                        selectedColumn = 0;
+                        selectedRow = 0;
+                        //if (selectedRow >= 10)
+                        //{
+                        //    selectedRow -= 10;
+                        //}
+                        break;
+                    case ConsoleKey.B:
+                        selectedColumn = 1;
+                        selectedRow = 0;
+                        //if (selectedRow >= 10)
+                        //{
+                        //    selectedRow -= 10;
+                        //}
+                        break;
+                    case ConsoleKey.C:
+                        selectedColumn = 0;
+                        selectedRow = 10;
+                        //if (selectedRow < 10)
+                        //{
+                        //    selectedRow += 10;
+                        //}
+                        break;
+                    case ConsoleKey.D:
+                        selectedColumn = 1;
+                        selectedRow = 10;
+                        //if (selectedRow < 10)
+                        //{
+                        //    selectedRow += 10;
+                        //}
+                        break;
+                    case ConsoleKey.D1:
+                        selectedRow = selectedRow < 10 ? 0 : 10;
+                        break;
+                    case ConsoleKey.D2:
+                        selectedRow = selectedRow < 10 ? 1 : 11;
+                        break;
+                    case ConsoleKey.D3:
+                        selectedRow = selectedRow < 10 ? 2 : 12;
+                        break;
+                    case ConsoleKey.D4:
+                        selectedRow = selectedRow < 10 ? 3 : 13;
+                        break;
+                    case ConsoleKey.D5:
+                        selectedRow = selectedRow < 10 ? 4 : 14;
+                        break;
+                    case ConsoleKey.D6:
+                        selectedRow = selectedRow < 10 ? 5 : 15;
+                        break;
+                    case ConsoleKey.D7:
+                        selectedRow = selectedRow < 10 ? 6 : 16;
+                        break;
+                    case ConsoleKey.D8:
+                        selectedRow = selectedRow < 10 ? 7 : 17;
+                        break;
+                    case ConsoleKey.D9:
+                        selectedRow = selectedRow < 10 ? 8 : 18;
+                        break;
+                    case ConsoleKey.D0:
+                        selectedRow = selectedRow < 10 ? 9 : 19;
+                        break;
+
+
                     case ConsoleKey.Q:
                         LastAction = UIAction.Exit;
                         isCurrentlyInMenu = false;
                         break;
-                    case ConsoleKey.Enter:
                     case ConsoleKey.Escape:
+                        LastAction = UIAction.MainMenu;
+                        isCurrentlyInMenu = false;
+                        break;
+                    case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
+                        CurrentSelection = selectedItem;
+                        LastAction = UIAction.SelectProduct;
                         isCurrentlyInMenu = false;
                         break;
                 }
             }
 
             return LastAction;
+        }
+
+        public void PrintPurchaseConfirmation(VendingMachineItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PrintChangeConfirmation(decimal changeDispensed)
+        {
+            throw new NotImplementedException();
         }
 
         // WHAT DOES YOU MANAGE?
