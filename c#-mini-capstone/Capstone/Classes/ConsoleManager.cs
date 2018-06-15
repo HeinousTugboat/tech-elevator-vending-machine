@@ -8,9 +8,16 @@ using static System.ConsoleColor;
 
 namespace Capstone.Classes
 {
-
     public class ConsoleManager : IUIManager
     {
+        // Check out my totally awesome logo!
+        public string[] Logo = {
+            @" __   __           _      ___      __  __      _   _       __  __   __  ",
+            @" \ \ / /__ _ _  __| |___ / _ \ ___|  \/  |__ _| |_(_)__   / / /  \ /  \ ",
+            @"  \ V / -_) ' \/ _` |___| (_) |___| |\/| / _` |  _| / _| / _ \ () | () |",
+            @"   \_/\___|_||_\__,_|    \___/    |_|  |_\__,_|\__|_\__| \___/\__/ \__/ "
+        };
+
         // Used to pass in the balance from the UI class.
         public decimal CurrentBalance { get; set; }
 
@@ -41,7 +48,7 @@ namespace Capstone.Classes
 
             // Hide that ugly little cursor. We'll do it ourselves.
             CursorVisible = false;
-            Title = "Vend-o-matic 600";
+            Title = "Vend-O-Matic 600";
 
             // Add UTF8 encoding so we can draw with pipes!
             OutputEncoding = Encoding.UTF8;
@@ -62,6 +69,16 @@ namespace Capstone.Classes
             string balance = "Currently Available: " + CurrentBalance.ToString("C");
             SetCursorPosition(WindowWidth - balance.Length - 1, WindowHeight - 1);
             Write(balance);
+
+            SetCursorPosition(WindowWidth - 74, WindowHeight - 6);
+            Write(Logo[0]);
+            SetCursorPosition(WindowWidth - 74, WindowHeight - 5);
+            Write(Logo[1]);
+            SetCursorPosition(WindowWidth - 74, WindowHeight - 4);
+            Write(Logo[2]);
+            SetCursorPosition(WindowWidth - 74, WindowHeight - 3);
+            Write(Logo[3]);
+
             SetCursorPosition(0, 0);
         }
 
@@ -95,6 +112,7 @@ namespace Capstone.Classes
             Write("(3) Exit ");
 
             SetColor();
+
         }
 
         public UIAction PrintMainMenu()
@@ -361,7 +379,7 @@ namespace Capstone.Classes
                         break;
                 }
             }
-            
+
             return LastAction;
         }
 
