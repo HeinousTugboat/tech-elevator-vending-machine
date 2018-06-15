@@ -25,10 +25,10 @@ namespace Capstone.Classes
         public VendingMachineItem CurrentSelection { get; private set; }
 
         // Default window colors, can be whatever. Normally White on Black.
-        private ConsoleColor baseFG = White;
-        private ConsoleColor baseBG = Black;
-        private ConsoleColor hiliteFG = Green;
-        private ConsoleColor hiliteBG = Black;
+        private readonly ConsoleColor baseFG = White;
+        private readonly ConsoleColor baseBG = Black;
+        private readonly ConsoleColor hiliteFG = Green;
+        private readonly ConsoleColor hiliteBG = Black;
 
         // Added for diagnostic purposes.
         private UIAction LastAction;
@@ -70,6 +70,8 @@ namespace Capstone.Classes
             SetCursorPosition(WindowWidth - balance.Length - 1, WindowHeight - 1);
             Write(balance);
 
+            SetColor(DarkGreen);
+
             SetCursorPosition(WindowWidth - 74, WindowHeight - 6);
             Write(Logo[0]);
             SetCursorPosition(WindowWidth - 74, WindowHeight - 5);
@@ -79,6 +81,7 @@ namespace Capstone.Classes
             SetCursorPosition(WindowWidth - 74, WindowHeight - 3);
             Write(Logo[3]);
 
+            SetColor();
             SetCursorPosition(0, 0);
         }
 
@@ -87,14 +90,18 @@ namespace Capstone.Classes
         {
             if (hilite)
             {
-                ForegroundColor = hiliteFG;
-                BackgroundColor = hiliteBG;
+                SetColor(hiliteFG, hiliteBG);
             }
             else
             {
-                ForegroundColor = baseFG;
-                BackgroundColor = baseBG;
+                SetColor(baseFG, baseBG);
             }
+        }
+
+        private void SetColor(ConsoleColor fg, ConsoleColor bg = Black)
+        {
+            ForegroundColor = fg;
+            BackgroundColor = bg;
         }
 
         private void MainMenuOutput(int selectedOption = 0)
@@ -309,28 +316,34 @@ namespace Capstone.Classes
             PrintBalance();
             int selectedRow = 0;
             int selectedColumn = 0;
+            int totalRows = 19;
+            int totalColumns = 2;
+            int tablePadding = 6;
+            int currentRow = 0;
+
+
 
             // Testing ideas for UI.
-            SetColor(true);
-            int top = 1;
-            int left = 2;
-            ProductBoxOutput(top, left, "Potato Crisps", 3.05m);
-            SetColor();
-            left += "Potato Crisps".Length + 7;
-            ProductBoxOutput(top, left, "Stackers", 1.45m);
-            left += "Stackers".Length + 7;
-            ProductBoxOutput(top, left, "Grain Waves", 2.75m);
-            left += "Grain Waves".Length + 7;
-            ProductBoxOutput(top, left, "Cloud Popcorn", 3.65m);
-            left = 2;
-            top += 6;
-            ProductBoxOutput(top, left, "Moonpie", 1.80m);
-            left += "Moonpie".Length + 7;
-            ProductBoxOutput(top, left, "Cowtales", 1.50m);
-            left += "Cowtales".Length + 7;
-            ProductBoxOutput(top, left, "Wonka Bar", 1.50m);
-            left += "Wonka Bar".Length + 7;
-            ProductBoxOutput(top, left, "Crunchie", 1.75m);
+            //SetColor(true);
+            //int top = 1;
+            //int left = 2;
+            //ProductBoxOutput(top, left, "Potato Crisps", 3.05m);
+            //SetColor();
+            //left += "Potato Crisps".Length + 7;
+            //ProductBoxOutput(top, left, "Stackers", 1.45m);
+            //left += "Stackers".Length + 7;
+            //ProductBoxOutput(top, left, "Grain Waves", 2.75m);
+            //left += "Grain Waves".Length + 7;
+            //ProductBoxOutput(top, left, "Cloud Popcorn", 3.65m);
+            //left = 2;
+            //top += 6;
+            //ProductBoxOutput(top, left, "Moonpie", 1.80m);
+            //left += "Moonpie".Length + 7;
+            //ProductBoxOutput(top, left, "Cowtales", 1.50m);
+            //left += "Cowtales".Length + 7;
+            //ProductBoxOutput(top, left, "Wonka Bar", 1.50m);
+            //left += "Wonka Bar".Length + 7;
+            //ProductBoxOutput(top, left, "Crunchie", 1.75m);
 
             LastAction = UIAction.MainMenu;
             // End idea test.
@@ -340,6 +353,61 @@ namespace Capstone.Classes
 
             while (isCurrentlyInMenu)
             {
+                foreach (KeyValuePair<ItemType, VendingMachineItem[]> itemList in items)
+                {
+                    bool activeColumn = false;
+                    bool activeRow = false;
+                    switch (itemList.Key)
+                    {
+                        case ItemType.Candy:
+                        case ItemType.Chip:
+                            CursorTop = 1;
+                            break;
+                        case ItemType.Drink:
+                        case ItemType.Gum:
+                            CursorTop = 13;
+                            break;
+                    }
+                    currentRow = 0;
+
+                    foreach (VendingMachineItem item in itemList.Value)
+                    {
+                        activeRow = ++currentRow == selectedRow;
+                        switch (itemList.Key)
+                        {
+                            case ItemType.Chip:
+                            case ItemType.Drink:
+                                CursorLeft = tablePadding;
+                                activeColumn = selectedColumn == 0;
+                                break;
+                            case ItemType.Candy:
+                            case ItemType.Gum:
+                                CursorLeft = (WindowWidth - 2 * tablePadding) / 2;
+                                activeColumn = selectedColumn == 1;
+                                break;
+                        }
+
+                        CursorTop++;
+                        if (item != null)
+                        {
+                            SetColor(activeColumn && activeRow);
+                            Write(item);
+                        }
+                        else
+                        {
+                            if (activeColumn && activeRow)
+                            {
+                                SetColor(DarkGreen);
+                            }
+                            else
+                            {
+                                SetColor(DarkGray);
+                            }
+                            Write("  -- no item --");
+                        }
+                        SetColor();
+                    }
+                }
                 keyPress = ReadKey(true);
                 switch (keyPress.Key)
                 {
@@ -347,11 +415,11 @@ namespace Capstone.Classes
                     case ConsoleKey.UpArrow:
                         if (--selectedRow < 0)
                         {
-                            selectedRow = 3;
+                            selectedRow = totalRows;
                         }
                         break;
                     case ConsoleKey.DownArrow:
-                        if (++selectedRow > 3)
+                        if (++selectedRow > totalRows)
                         {
                             selectedRow = 0;
                         }
@@ -359,11 +427,11 @@ namespace Capstone.Classes
                     case ConsoleKey.LeftArrow:
                         if (--selectedColumn < 0)
                         {
-                            selectedColumn = 9;
+                            selectedColumn = totalColumns;
                         }
                         break;
                     case ConsoleKey.RightArrow:
-                        if (++selectedColumn > 9)
+                        if (++selectedColumn > totalColumns)
                         {
                             selectedColumn = 0;
                         }
