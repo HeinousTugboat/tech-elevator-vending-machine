@@ -64,11 +64,29 @@ namespace Capstone.Classes
             Clear();
 
             SetCursorPosition(1, WindowHeight - 1);
-            Write("Current Action: " + LastAction + "\t\t");
+            SetColor(Gray);
+            Write("Action: ");
+            SetColor(White);
+            Write(LastAction);
 
-            string balance = "Currently Available: " + CurrentBalance.ToString("C");
-            SetCursorPosition(WindowWidth - balance.Length - 1, WindowHeight - 1);
+            string balance = "   Available: ";
+            string balanceAmount = CurrentBalance.ToString("C");
+            string selection = "";
+            string selectionName = "";
+            if (CurrentSelection != null)
+            {
+                selection = "Selection: ";
+                selectionName = CurrentSelection.Name;
+            }
+            SetCursorPosition(WindowWidth - (balance.Length + 1 + balanceAmount.Length + selection.Length + selectionName.Length), WindowHeight - 1);
+            SetColor(Gray);
+            Write(selection);
+            SetColor(White);
+            Write(selectionName);
+            SetColor(Gray);
             Write(balance);
+            SetColor(White);
+            Write(balanceAmount);
 
             SetColor(DarkGreen);
 
@@ -316,37 +334,11 @@ namespace Capstone.Classes
             PrintBalance();
             int selectedRow = 0;
             int selectedColumn = 0;
-            int totalRows = 19;
-            int totalColumns = 2;
+            int totalRows = 19; // 20 rows, indexed at 0.
+            int totalColumns = 1; // 2 columns, indexed at 0.
             int tablePadding = 6;
             int currentRow = 0;
-
-
-
-            // Testing ideas for UI.
-            //SetColor(true);
-            //int top = 1;
-            //int left = 2;
-            //ProductBoxOutput(top, left, "Potato Crisps", 3.05m);
-            //SetColor();
-            //left += "Potato Crisps".Length + 7;
-            //ProductBoxOutput(top, left, "Stackers", 1.45m);
-            //left += "Stackers".Length + 7;
-            //ProductBoxOutput(top, left, "Grain Waves", 2.75m);
-            //left += "Grain Waves".Length + 7;
-            //ProductBoxOutput(top, left, "Cloud Popcorn", 3.65m);
-            //left = 2;
-            //top += 6;
-            //ProductBoxOutput(top, left, "Moonpie", 1.80m);
-            //left += "Moonpie".Length + 7;
-            //ProductBoxOutput(top, left, "Cowtales", 1.50m);
-            //left += "Cowtales".Length + 7;
-            //ProductBoxOutput(top, left, "Wonka Bar", 1.50m);
-            //left += "Wonka Bar".Length + 7;
-            //ProductBoxOutput(top, left, "Crunchie", 1.75m);
-
-            LastAction = UIAction.MainMenu;
-            // End idea test.
+            VendingMachineItem selectedItem = null;
 
             bool isCurrentlyInMenu = true;
             ConsoleKeyInfo keyPress;
@@ -361,14 +353,15 @@ namespace Capstone.Classes
                     {
                         case ItemType.Candy:
                         case ItemType.Chip:
+                            currentRow = -1;
                             CursorTop = 1;
                             break;
                         case ItemType.Drink:
                         case ItemType.Gum:
+                            currentRow = 9;
                             CursorTop = 13;
                             break;
                     }
-                    currentRow = 0;
 
                     foreach (VendingMachineItem item in itemList.Value)
                     {
@@ -388,8 +381,15 @@ namespace Capstone.Classes
                         }
 
                         CursorTop++;
+
+                        if (activeColumn && activeRow)
+                        {
+                            selectedItem = item;
+                        }
+
                         if (item != null)
                         {
+
                             SetColor(activeColumn && activeRow);
                             Write(item);
                         }
@@ -436,13 +436,82 @@ namespace Capstone.Classes
                             selectedColumn = 0;
                         }
                         break;
+                    case ConsoleKey.A:
+                        selectedColumn = 0;
+                        selectedRow = 0;
+                        //if (selectedRow >= 10)
+                        //{
+                        //    selectedRow -= 10;
+                        //}
+                        break;
+                    case ConsoleKey.B:
+                        selectedColumn = 1;
+                        selectedRow = 0;
+                        //if (selectedRow >= 10)
+                        //{
+                        //    selectedRow -= 10;
+                        //}
+                        break;
+                    case ConsoleKey.C:
+                        selectedColumn = 0;
+                        selectedRow = 10;
+                        //if (selectedRow < 10)
+                        //{
+                        //    selectedRow += 10;
+                        //}
+                        break;
+                    case ConsoleKey.D:
+                        selectedColumn = 1;
+                        selectedRow = 10;
+                        //if (selectedRow < 10)
+                        //{
+                        //    selectedRow += 10;
+                        //}
+                        break;
+                    case ConsoleKey.D1:
+                        selectedRow = selectedRow < 10 ? 0 : 10;
+                        break;
+                    case ConsoleKey.D2:
+                        selectedRow = selectedRow < 10 ? 1 : 11;
+                        break;
+                    case ConsoleKey.D3:
+                        selectedRow = selectedRow < 10 ? 2 : 12;
+                        break;
+                    case ConsoleKey.D4:
+                        selectedRow = selectedRow < 10 ? 3 : 13;
+                        break;
+                    case ConsoleKey.D5:
+                        selectedRow = selectedRow < 10 ? 4 : 14;
+                        break;
+                    case ConsoleKey.D6:
+                        selectedRow = selectedRow < 10 ? 5 : 15;
+                        break;
+                    case ConsoleKey.D7:
+                        selectedRow = selectedRow < 10 ? 6 : 16;
+                        break;
+                    case ConsoleKey.D8:
+                        selectedRow = selectedRow < 10 ? 7 : 17;
+                        break;
+                    case ConsoleKey.D9:
+                        selectedRow = selectedRow < 10 ? 8 : 18;
+                        break;
+                    case ConsoleKey.D0:
+                        selectedRow = selectedRow < 10 ? 9 : 19;
+                        break;
+
+
                     case ConsoleKey.Q:
                         LastAction = UIAction.Exit;
                         isCurrentlyInMenu = false;
                         break;
-                    case ConsoleKey.Enter:
                     case ConsoleKey.Escape:
+                        LastAction = UIAction.MainMenu;
+                        isCurrentlyInMenu = false;
+                        break;
+                    case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
+                        CurrentSelection = selectedItem;
+                        LastAction = UIAction.SelectProduct;
                         isCurrentlyInMenu = false;
                         break;
                 }
