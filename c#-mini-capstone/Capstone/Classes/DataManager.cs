@@ -16,7 +16,7 @@ namespace Capstone.Classes
         void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance);
 
         // Called by UserInterface when sales report requested
-        void GenerateSalesReport(List<VendingMachineTransaction> transactions);
+        void GenerateSalesReport(List<VendingMachineItem> items);
     }
 
     public class DataManager : IDataManager
@@ -60,13 +60,31 @@ namespace Capstone.Classes
         {
             using (StreamWriter sw = new StreamWriter(LogFile, false))
             {
-                   sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
+                sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
             };
         }
 
-        public void GenerateSalesReport(List<VendingMachineTransaction> transactions)
+        public void GenerateSalesReport(List<VendingMachineItem> items)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (StreamWriter sw = new StreamWriter("sales-report-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt", false))
+                {
+                    decimal total = 0;
+                    foreach (VendingMachineItem item in items)
+                    {
+                        decimal price = item.Price * (5 - item.Quantity);
+                        total += price;
+                        sw.WriteLine($"{item.Name}|{5 - item.Quantity}");
+                    }
+                    sw.WriteLine($"\n**TOTAL SALES** {total.ToString("C")}");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Everything broke: {e.Message}");
+                throw;
+            }
         }
     }
 }

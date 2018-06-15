@@ -14,7 +14,8 @@ namespace Capstone.Classes
         SelectProduct, // User has selected a product on the UI
         PurchaseItem, // User wants to purchase currently selected product
         FinishTransaction, // User is done, wants out, screw you
-        Exit // BYE NOW.
+        Exit, // BYE NOW.
+        SalesReport
     }
 
     public interface IUIManager
@@ -65,8 +66,11 @@ namespace Capstone.Classes
                         action = uiManager.PrintPurchasingMenu();
                         break;
                     case UIAction.DisplayItems:
-
                         action = uiManager.PrintProductSelectionMenu(vendingMachine.GetAllItems());
+                        break;
+                    case UIAction.SalesReport:
+                        action = UIAction.MainMenu;
+                        dataManager.GenerateSalesReport(vendingMachine.GetAllItems().Values.SelectMany(x => x).Where(x => x != null).ToList());
                         break;
                     default:
                         action = UIAction.MainMenu;

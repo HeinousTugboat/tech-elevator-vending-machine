@@ -192,6 +192,10 @@ namespace Capstone.Classes
                         selectedOption = 2;
                         isCurrentlyInMenu = false;
                         break;
+                    case ConsoleKey.D4:
+                        selectedOption = 3;
+                        isCurrentlyInMenu = false;
+                        break;
                 }
             }
 
@@ -207,7 +211,11 @@ namespace Capstone.Classes
             {
                 LastAction = UIAction.Exit;
             }
-            return LastAction;
+            if (selectedOption == 3)
+            {
+                LastAction = UIAction.SalesReport;
+            }
+                return LastAction;
         }
 
         // Actually prints the purchasing menu.
