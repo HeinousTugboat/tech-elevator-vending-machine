@@ -73,9 +73,9 @@ namespace Capstone.Classes
                     decimal total = 0;
                     foreach (VendingMachineItem item in items)
                     {
-                        decimal price = item.Price * (5 - item.Quantity);
-                        total += price;
-                        sw.WriteLine($"{item.Name}|{5 - item.Quantity}");
+                        int quantitySold = 5 - item.Quantity;
+                        total += item.Price * quantitySold;
+                        sw.WriteLine($"{item.Name}|{quantitySold}");
                     }
                     sw.WriteLine($"\n**TOTAL SALES** {total.ToString("C")}");
                 }
