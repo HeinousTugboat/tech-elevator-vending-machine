@@ -21,18 +21,13 @@ namespace Capstone.Classes
 
     public class DataManager : IDataManager
     {
-        private readonly string logFile;
-
         public DataManager(string logFile)
         {
-            this.logFile = logFile;
+            LogFile = logFile;
             // Print out vending machine starting up in log.
         }
 
-        private string LogFile
-        {
-            get { return logFile; }
-        }
+        private string LogFile { get; }
 
         public List<VendingMachineItem> LoadItems(string filename)
         {
