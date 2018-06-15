@@ -8,19 +8,32 @@ using System.Threading.Tasks;
 
 namespace Capstone.Classes.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class VendingMachineItemTests
     {
-        [TestMethod()]
-        public void VendingMachineItemTest()
+        [TestMethod]
+        public void VendingMachineItem_Constructor()
         {
-            Assert.Fail();
-        }
+            // Arrange
+            string fakeItemName = "My Vending Machine Item";
+            decimal fakeItemPrice = 10.0M;
+            ItemType fakeItemType = ItemType.Candy;
+            int fakeItemSlot = 4;
 
-        [TestMethod()]
-        public void ToStringTest()
-        {
-            Assert.Fail();
+            // Act
+            VendingMachineItem result = new VendingMachineItem(fakeItemName, fakeItemPrice, fakeItemType, fakeItemSlot);
+
+            // Assert
+            // Item.Quantity
+            Assert.AreEqual(5, result.Quantity);
+            // Item.Name
+            Assert.AreEqual("My Vending Machine Item", result.Name);
+            // Item.Slot
+            Assert.AreEqual(fakeItemSlot, result.Slot);
+            // Item.Price
+            Assert.AreEqual(10M, result.Price);
+            // Item.Type
+            Assert.AreEqual(ItemType.Candy, result.Type);
         }
     }
 }

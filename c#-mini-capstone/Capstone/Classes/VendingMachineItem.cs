@@ -29,10 +29,5 @@ namespace Capstone.Classes
             Price = price;
             Quantity = 5;
         }
-
-        public override string ToString()
-        {
-            return $"{(char)Type}{Slot} | {Name} | {Price.ToString("C")} | {Quantity} | {Type}";
-        }
     }
 }
