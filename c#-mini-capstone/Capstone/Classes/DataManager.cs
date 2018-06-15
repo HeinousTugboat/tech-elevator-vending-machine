@@ -21,11 +21,17 @@ namespace Capstone.Classes
 
     public class DataManager : IDataManager
     {
-        private string LogFile { get; }
+        private readonly string logFile;
+
         public DataManager(string logFile)
         {
-            LogFile = logFile;
+            this.logFile = logFile;
             // Print out vending machine starting up in log.
+        }
+
+        private string LogFile
+        {
+            get { return logFile; }
         }
 
         public List<VendingMachineItem> LoadItems(string filename)
@@ -35,10 +41,10 @@ namespace Capstone.Classes
 
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
         {
-            string directory = Environment.CurrentDirectory;
-            string filename = @"Log.txt";
-            string fullPath = Path.Combine(directory, filename);
-            using (StreamWriter sw = new StreamWriter(filename, false)) { };
+            using (StreamWriter sw = new StreamWriter(LogFile, false))
+            {
+                   sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
+            };
         }
 
         public void GenerateSalesReport(List<VendingMachineTransaction> transactions)
