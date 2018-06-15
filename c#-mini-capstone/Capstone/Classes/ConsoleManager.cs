@@ -367,7 +367,7 @@ namespace Capstone.Classes
                         {
 
                             SetColor(activeColumn && activeRow);
-                            Write(item);
+                            Write(item.Quantity + "x " + item.Name + "  " + item.Price.ToString("C"));
                         }
                         else
                         {
