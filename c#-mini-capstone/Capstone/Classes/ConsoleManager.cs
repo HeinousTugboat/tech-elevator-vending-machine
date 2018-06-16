@@ -432,39 +432,23 @@ namespace Capstone.Classes
                         }
                         break;
                     // Navigate menu using item category letters: A, B, C, D
-                    // HACK: UI thought: should moving to a new category keep you at the same row or move you back to the first row?
                     case ConsoleKey.A:
                         selectedColumn = 0;
                         selectedRow = 0;
-                        //if (selectedRow >= 10)
-                        //{
-                        //    selectedRow -= 10;
-                        //}
                         break;
                     case ConsoleKey.B:
                         selectedColumn = 1;
                         selectedRow = 0;
-                        //if (selectedRow >= 10)
-                        //{
-                        //    selectedRow -= 10;
-                        //}
                         break;
                     case ConsoleKey.C:
                         selectedColumn = 0;
                         selectedRow = 10;
-                        //if (selectedRow < 10)
-                        //{
-                        //    selectedRow += 10;
-                        //}
                         break;
                     case ConsoleKey.D:
                         selectedColumn = 1;
                         selectedRow = 10;
-                        //if (selectedRow < 10)
-                        //{
-                        //    selectedRow += 10;
-                        //}
                         break;
+
                     // Navigate to specific row by number key or numpad.
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
