@@ -26,7 +26,7 @@ namespace Capstone.Classes
         public DataManager(string logFile)
         {
             LogFile = logFile;
-            // Print out vending machine starting up in log.
+            // TODO: Print out vending machine starting up in log.
         }
 
         public List<VendingMachineItem> LoadItems(string filename)
@@ -64,7 +64,7 @@ namespace Capstone.Classes
 
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
         {
-            using (StreamWriter sw = new StreamWriter(LogFile, false))
+            using (StreamWriter sw = new StreamWriter(LogFile, true))
             {
                 sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
             };
