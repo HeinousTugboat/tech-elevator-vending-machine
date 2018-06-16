@@ -128,6 +128,7 @@ namespace Capstone.Classes
                             IEnumerable<VendingMachineItem> items = vendingMachine.GetAllItems().Values
                                 .SelectMany(x => x).Where(x => x != null);
                             dataManager.GenerateSalesReport(items.ToList());
+                            // TODO: Implement notification to UI Manager..
                             break;
                         default:
                             action = UIAction.DisplayMainMenu;
