@@ -65,7 +65,7 @@ namespace Capstone.Classes
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
         {
             using (StreamWriter sw = new StreamWriter(LogFile, true))
-            {
+            {   // TODO: Add Item name to log
                 sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
             };
         }

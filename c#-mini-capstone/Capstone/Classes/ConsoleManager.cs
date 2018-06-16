@@ -514,13 +514,13 @@ namespace Capstone.Classes
 
         // Prints out specific comment on dispense depending on what type of item is purchased.
         public void PrintPurchaseConfirmation(VendingMachineItem item)
-        {
+        {   // TODO: Print correct purchase confirmation?
             throw new NotImplementedException();
         }
 
         // Calculates change based on amount provided by vending machine.
         public void PrintChangeConfirmation(decimal changeDispensed)
-        {
+        {   // TODO: Convert change into coins.
             throw new NotImplementedException();
         }
 
@@ -567,7 +567,7 @@ namespace Capstone.Classes
                     VendingMachineItem item = CurrentSelection;
                     //VendingMachineItem item = transaction.Item;
                     switch (item.Type)
-                    {
+                    {   // TODO: Implement correct messages.
                         case ItemType.Candy:
                         case ItemType.Chip:
                         case ItemType.Drink:
