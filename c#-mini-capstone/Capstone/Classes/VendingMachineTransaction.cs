@@ -8,10 +8,18 @@ namespace Capstone.Classes
 {
     public enum TransactionType
     {
+        // Feed money transactions
         FeedMoney,
-        GiveChange,
+        InvalidBill,
+
+        // Purchase item transactions
         PurchaseItem,
-        InvalidBill
+        ItemOutOfStock,
+        NotSufficientFunds,
+        InvalidPurchase,
+
+        // Finish transaction.. transactions
+        GiveChange,
     }
     public struct VendingMachineTransaction
     {

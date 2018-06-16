@@ -39,6 +39,8 @@ namespace Capstone.Classes
             {
                 StockList[item.Type][item.Slot] = item;
             }
+
+            TransactionLog = new List<VendingMachineTransaction>();
         }
 
         // Methods
@@ -65,27 +67,53 @@ namespace Capstone.Classes
                 CurrentBalance += amountToAdd;
             }
 
+            TransactionLog.Add(result);
             return result;
         }
 
         public VendingMachineItem CheckItem(ItemType type, int slot)
         {
-            throw new NotImplementedException();
+            return StockList[type][slot];
         }
 
         public VendingMachineTransaction PurchaseItem(ItemType type, int slot)
         {
-            throw new NotImplementedException();
+            VendingMachineTransaction result;
+
+            if (StockList[type][slot] == null)
+            {
+                result = new VendingMachineTransaction(TransactionType.InvalidPurchase, 0, StockList[type][slot]);
+            }
+            else if (StockList[type][slot].Price > CurrentBalance)
+            {
+                result = new VendingMachineTransaction(TransactionType.NotSufficientFunds, StockList[type][slot]);
+            }
+            else if (StockList[type][slot].Quantity > 0)
+            {
+                CurrentBalance -= StockList[type][slot].Price;
+                --StockList[type][slot].Quantity;
+                result = new VendingMachineTransaction(TransactionType.PurchaseItem, StockList[type][slot]);
+            }
+            else
+            {
+                result = new VendingMachineTransaction(TransactionType.ItemOutOfStock, StockList[type][slot]);
+            }
+
+            TransactionLog.Add(result);
+            return result;
         }
 
         public VendingMachineTransaction FinishTransaction()
         {
-            throw new NotImplementedException();
+            VendingMachineTransaction transaction = new VendingMachineTransaction(TransactionType.GiveChange, CurrentBalance);
+            CurrentBalance = 0;
+            TransactionLog.Add(transaction);
+            return transaction;
         }
 
         public List<VendingMachineTransaction> GetAllTransactions()
         {
-            throw new NotImplementedException();
+            return TransactionLog;
         }
     }
 }
