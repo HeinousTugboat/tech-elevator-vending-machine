@@ -529,6 +529,32 @@ namespace Capstone.Classes
         // Displays the feed money menu and returns amount fed.
         public int FeedMoneyRequest()
         {
+            SetCursorPosition(4, 6);
+            Write("What size bill would you like to enter? ");
+            string response = ReadLine();
+
+            bool parsed = int.TryParse(response, out int result);
+
+            while (!parsed)
+            {
+                SetCursorPosition(0, 6);
+                Write(new string(' ', WindowWidth));
+                SetCursorPosition(4, 6);
+                Write("What size bill would you like to enter? ");
+                SetCursorPosition(0, 7);
+                Write(new string(' ', WindowWidth));
+                SetCursorPosition(6, 7);
+                Write("That's not even a real number! Try again: ");
+                response = ReadLine();
+                parsed = int.TryParse(response, out result);
+            }
+
+            return result;
+        
+        }
+
+        public void PrintTransaction(VendingMachineTransaction transaction)
+        {
             throw new NotImplementedException();
         }
     }

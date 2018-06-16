@@ -41,6 +41,7 @@ namespace Capstone.Classes
         int FeedMoneyRequest();
         void PrintPurchaseConfirmation(VendingMachineItem item);
         void PrintChangeConfirmation(decimal changeDispensed);
+        void PrintTransaction(VendingMachineTransaction transaction);
     }
 
     public class UserInterface
@@ -63,8 +64,9 @@ namespace Capstone.Classes
 
             while (!done)
             {
-                uiManager.CurrentBalance += 0.01M;
+                uiManager.CurrentBalance = vendingMachine.CurrentBalance;
                 VendingMachineItem selection = uiManager.CurrentSelection;
+                VendingMachineTransaction transaction;
                 try
                 {
                     switch (action)
@@ -77,7 +79,9 @@ namespace Capstone.Classes
                             break;
                         case UIAction.FeedMoney:
                             int amount = uiManager.FeedMoneyRequest();
-                            vendingMachine.FeedMoney(amount);
+                            transaction = vendingMachine.FeedMoney(amount);
+                            dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
+                            uiManager.PrintTransaction(transaction);
                             action = UIAction.DisplayPurchasing;
                             break;
                         case UIAction.ReviewItems:
@@ -99,13 +103,15 @@ namespace Capstone.Classes
                             selection = uiManager.CurrentSelection;
                             if (selection != null)
                             {
-                                vendingMachine.PurchaseItem(selection.Type, selection.Slot);
+                                transaction = vendingMachine.PurchaseItem(selection.Type, selection.Slot);
+                                dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
+                                uiManager.CurrentBalance = vendingMachine.CurrentBalance;
+                                uiManager.PrintTransaction(transaction);
                             }
-                            // UNDONE: Add IUIManager dispensing method.
                             action = UIAction.DisplayPurchasing;
                             break;
                         case UIAction.FinishTransaction:
-                            VendingMachineTransaction transaction = vendingMachine.FinishTransaction();
+                            transaction = vendingMachine.FinishTransaction();
                             uiManager.PrintChangeConfirmation(transaction.Amount);
                             break;
                         case UIAction.Exit:
