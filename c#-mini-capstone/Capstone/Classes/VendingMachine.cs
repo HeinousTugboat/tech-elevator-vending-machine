@@ -44,6 +44,7 @@ namespace Capstone.Classes
         // Methods
         public Dictionary<ItemType, VendingMachineItem[]> GetAllItems()
         {
+            // HACK: Extension idea: convert this into a safe method instead of returning reference to StockList.
             return StockList;
         }
 
