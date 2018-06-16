@@ -187,6 +187,7 @@ namespace Capstone.Classes
                         isCurrentlyInMenu = false;
                         break;
                     case ConsoleKey.Escape:
+                    case ConsoleKey.Q:
                     case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         selectedOption = 2;
@@ -201,11 +202,11 @@ namespace Capstone.Classes
 
             if (selectedOption == 0)
             {
-                LastAction = UIAction.DisplayItems;
+                LastAction = UIAction.ReviewItems;
             }
             if (selectedOption == 1)
             {
-                LastAction = UIAction.PurchaseItem;
+                LastAction = UIAction.DisplayPurchasing;
             }
             if (selectedOption == 2)
             {
@@ -295,17 +296,17 @@ namespace Capstone.Classes
             }
             if (selectedOption == 1)
             {
-                LastAction = UIAction.SelectProduct;
+                LastAction = UIAction.DisplayItems;
             }
             if (selectedOption == 2)
             {
-                LastAction = UIAction.MainMenu;
+                LastAction = UIAction.FinishTransaction;
             }
             return LastAction;
         }
 
         // Method called by UserInterface to get action from selection menu.
-        public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items)
+        public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction actionToTake)
         {
             PrintBalance();
             int selectedRow = 0;
@@ -481,13 +482,13 @@ namespace Capstone.Classes
                         isCurrentlyInMenu = false;
                         break;
                     case ConsoleKey.Escape:
-                        LastAction = UIAction.MainMenu;
+                        LastAction = UIAction.DisplayMainMenu;
                         isCurrentlyInMenu = false;
                         break;
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
                         CurrentSelection = selectedItem;
-                        LastAction = UIAction.SelectProduct;
+                        LastAction = actionToTake;
                         isCurrentlyInMenu = false;
                         break;
                 }
@@ -502,6 +503,11 @@ namespace Capstone.Classes
         }
 
         public void PrintChangeConfirmation(decimal changeDispensed)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int FeedMoneyRequest()
         {
             throw new NotImplementedException();
         }
