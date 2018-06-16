@@ -256,7 +256,7 @@ namespace Capstone.Classes
 
                 switch (keyPress.Key)
                 {
-                    // Navigate menu using up/down arrow, select with enter/escape/space
+                    // Navigate menu using up/down arrow, select with enter/space
                     case ConsoleKey.UpArrow:
                         if (--selectedOption < 0)
                         {
@@ -270,7 +270,6 @@ namespace Capstone.Classes
                         }
                         break;
                     case ConsoleKey.Enter:
-                    case ConsoleKey.Escape:
                     case ConsoleKey.Spacebar:
                         isCurrentlyInMenu = false;
                         break;
@@ -291,6 +290,21 @@ namespace Capstone.Classes
                         selectedOption = 2;
                         isCurrentlyInMenu = false;
                         break;
+
+                    // Abort mission! Cancel out of purchasing menu.
+                    case ConsoleKey.Escape:
+                        LastAction = UIAction.DisplayMainMenu;
+                        selectedOption = -1;
+                        isCurrentlyInMenu = false;
+                        break;
+
+                    // Abort WHOLE PROGRAM! Bail out.
+                    case ConsoleKey.Q:
+                        LastAction = UIAction.Exit;
+                        selectedOption = -1;
+                        isCurrentlyInMenu = false;
+                        break;
+
                 }
             }
 
