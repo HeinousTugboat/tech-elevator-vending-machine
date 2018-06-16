@@ -113,6 +113,7 @@ namespace Capstone.Classes
                             break;
                         case UIAction.FinishTransaction:
                             transaction = vendingMachine.FinishTransaction();
+                            dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
                             uiManager.PrintChangeConfirmation(transaction.Amount);
                             break;
                         case UIAction.Exit:
