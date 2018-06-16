@@ -81,6 +81,7 @@ namespace Capstone.Classes
                             int amount = uiManager.FeedMoneyRequest();
                             transaction = vendingMachine.FeedMoney(amount);
                             dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
+                            uiManager.CurrentBalance = vendingMachine.CurrentBalance;
                             uiManager.PrintTransaction(transaction);
                             action = UIAction.DisplayPurchasing;
                             break;

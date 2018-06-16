@@ -564,12 +564,38 @@ namespace Capstone.Classes
             }
 
             return result;
-        
         }
 
         public void PrintTransaction(VendingMachineTransaction transaction)
         {
-            throw new NotImplementedException();
+            PrintBalance();
+            SetCursorPosition(4, 6);
+
+            switch (transaction.Type)
+            {
+                case TransactionType.FeedMoney:
+                    Write($"Yay Money! You gave me a {transaction.Amount.ToString("C")} bill!");
+                    break;
+                case TransactionType.InvalidBill:
+                    Write($"That isn't real money. What am I supposed to do with that?");
+                    break;
+                case TransactionType.PurchaseItem:
+                    VendingMachineItem item = CurrentSelection;
+                    //VendingMachineItem item = transaction.Item;
+                    switch (item.Type)
+                    {
+                        case ItemType.Candy:
+                        case ItemType.Chip:
+                        case ItemType.Drink:
+                        case ItemType.Gum:
+                            Write("Good job. You bought some shit.");
+                            break;
+                    }
+                    break;
+                default:
+                    return;
+            }
+            ReadLine();
         }
     }
 }
