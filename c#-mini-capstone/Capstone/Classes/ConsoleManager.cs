@@ -59,6 +59,8 @@ namespace Capstone.Classes
             PrintBalance();
         }
 
+        // This prints our current balance (set from UserInterface), and various 
+        // other bits persistent UI information.
         private void PrintBalance()
         {
             Clear();
@@ -123,6 +125,7 @@ namespace Capstone.Classes
             BackgroundColor = bg;
         }
 
+        // HACK: Extension idea: extract the common code from the Output methods into a generic method or class
         // Actually Prints the main menu.
         private void MainMenuOutput(int selectedOption = 0)
         {
@@ -142,7 +145,8 @@ namespace Capstone.Classes
 
         }
 
-        // Method called by UserInterface to get action from main menu.
+        // HACK: Extension idea: Extract common input handling code into separate method or class.
+        // Method called by UserInterface to display main menu and user's selected action.
         public UIAction PrintMainMenu()
         {
             PrintBalance();
@@ -216,7 +220,7 @@ namespace Capstone.Classes
             {
                 LastAction = UIAction.SalesReport;
             }
-                return LastAction;
+            return LastAction;
         }
 
         // Actually prints the purchasing menu.
@@ -237,7 +241,7 @@ namespace Capstone.Classes
             SetColor();
         }
 
-        // Method called by UserInterface to get action from purchasing menu.
+        // Method called by UserInterface to display purchasing menu and user's selected action.
         public UIAction PrintPurchasingMenu()
         {
             PrintBalance();
@@ -305,7 +309,7 @@ namespace Capstone.Classes
             return LastAction;
         }
 
-        // Method called by UserInterface to get action from selection menu.
+        // Method called by UserInterface to display inventory list, update selected item, and return an action.
         public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction actionToTake)
         {
             PrintBalance();
@@ -386,9 +390,9 @@ namespace Capstone.Classes
                     }
                 }
                 keyPress = ReadKey(true);
-                switch (keyPress.Key)
+                switch (keyPress.Key) // HACK: Refactor out keyPress? Only necessary if we need to refer back to modifier keys.
                 {
-                    // Navigate menu using up/down arrow, select with enter/space, bail to main menu with escape, select column/row with letter/number
+                    // Navigate menu using arrow keys
                     case ConsoleKey.UpArrow:
                         if (--selectedRow < 0)
                         {
@@ -413,6 +417,8 @@ namespace Capstone.Classes
                             selectedColumn = 0;
                         }
                         break;
+                    // Navigate menu using item category letters: A, B, C, D
+                    // HACK: UI thought: should moving to a new category keep you at the same row or move you back to the first row?
                     case ConsoleKey.A:
                         selectedColumn = 0;
                         selectedRow = 0;
@@ -445,38 +451,49 @@ namespace Capstone.Classes
                         //    selectedRow += 10;
                         //}
                         break;
+                    // Navigate to specific row by number key or numpad.
+                    case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         selectedRow = selectedRow < 10 ? 0 : 10;
                         break;
+                    case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         selectedRow = selectedRow < 10 ? 1 : 11;
                         break;
+                    case ConsoleKey.NumPad3:
                     case ConsoleKey.D3:
                         selectedRow = selectedRow < 10 ? 2 : 12;
                         break;
+                    case ConsoleKey.NumPad4:
                     case ConsoleKey.D4:
                         selectedRow = selectedRow < 10 ? 3 : 13;
                         break;
+                    case ConsoleKey.NumPad5:
                     case ConsoleKey.D5:
                         selectedRow = selectedRow < 10 ? 4 : 14;
                         break;
+                    case ConsoleKey.NumPad6:
                     case ConsoleKey.D6:
                         selectedRow = selectedRow < 10 ? 5 : 15;
                         break;
+                    case ConsoleKey.NumPad7:
                     case ConsoleKey.D7:
                         selectedRow = selectedRow < 10 ? 6 : 16;
                         break;
+                    case ConsoleKey.NumPad8:
                     case ConsoleKey.D8:
                         selectedRow = selectedRow < 10 ? 7 : 17;
                         break;
+                    case ConsoleKey.NumPad9:
                     case ConsoleKey.D9:
                         selectedRow = selectedRow < 10 ? 8 : 18;
                         break;
+                    case ConsoleKey.NumPad0:
                     case ConsoleKey.D0:
                         selectedRow = selectedRow < 10 ? 9 : 19;
                         break;
 
-
+                    // Exit app via Q, cancel selection with escape, confirm selection with enter/spacebar
                     case ConsoleKey.Q:
                         LastAction = UIAction.Exit;
                         isCurrentlyInMenu = false;
@@ -497,41 +514,22 @@ namespace Capstone.Classes
             return LastAction;
         }
 
+        // Prints out specific comment on dispense depending on what type of item is purchased.
         public void PrintPurchaseConfirmation(VendingMachineItem item)
         {
             throw new NotImplementedException();
         }
 
+        // Calculates change based on amount provided by vending machine.
         public void PrintChangeConfirmation(decimal changeDispensed)
         {
             throw new NotImplementedException();
         }
 
+        // Displays the feed money menu and returns amount fed.
         public int FeedMoneyRequest()
         {
             throw new NotImplementedException();
         }
-
-        // WHAT DOES YOU MANAGE?
-        // Console. Duh.
-        // Print Main Menu
-        //   Display Items
-        //   Purchase Item
-        //   Exit
-        // Print Purchasing Menu
-        //   Feed Money
-        //   Select Product
-        //   Finish Transaction
-        // Print Product Selection Menu
-        //   Print all slots?
-
-        // Print Messages such as 
-        //   Out of Stock 
-        //   Shit's Broked
-        //   Dispensary Commentary ("Crunch Crunch, Yum!")..
-        //   Product Code doesn't exist.. if we use menu, not necessary? Just don't show unavailable stuff..
-
-        // Current Balance!
-
     }
 }

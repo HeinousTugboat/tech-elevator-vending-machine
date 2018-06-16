@@ -6,20 +6,30 @@ using System.Threading.Tasks;
 
 namespace Capstone.Classes
 {
+    /**
+     * UIActions represent any possible action we can expect back from our UI 
+     * Manager. This should be every possible way the user can actually interact 
+     * with our model.
+     **/
     public enum UIAction
     {
-        DisplayMainMenu, // User viewing the main menu
-        FeedMoney, // User wants to add money
-        ReviewItems, // User wants to see items before purchasing
-        DisplayItems, // User wants to see product selection grid
-        DisplayPurchasing, // User wants to see purchasing menu
-        CheckItem, // User has selected a product on the UI
-        PurchaseItem, // User wants to purchase & dispense currently selected product
-        FinishTransaction, // User is done, wants out, screw you
-        Exit, // BYE NOW.
-        SalesReport
+        DisplayMainMenu,    // Display the main menu
+        DisplayPurchasing,  // Display purchasing menu
+        FeedMoney,          // Display Feed Money interface, expect amount back
+        ReviewItems,        // Display Item list, check selection
+        DisplayItems,       // Display Item list, purchase selection
+        CheckItem,          // Check currently selected item
+        PurchaseItem,       // Purchase and Dispense currently selected item
+        FinishTransaction,  // End transaction, provide change, display change dispensed
+        Exit,               // Exit program
+        SalesReport         // Generate current sales report
     }
 
+    /**
+     * IUIManager's the interface for our UI Manager we're writing to. Ideally 
+     * this is abstract enough that we can plop in an HtmlManager or UWPManager 
+     * or whatever kind of manager. We shouldn't care what's driving us.
+     **/
     public interface IUIManager
     {
         decimal CurrentBalance { get; set; }
@@ -27,11 +37,10 @@ namespace Capstone.Classes
 
         UIAction PrintMainMenu();
         UIAction PrintPurchasingMenu();
-        UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction actionToTake);
+        UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction defaultAction);
         int FeedMoneyRequest();
         void PrintPurchaseConfirmation(VendingMachineItem item);
         void PrintChangeConfirmation(decimal changeDispensed);
-
     }
 
     public class UserInterface
@@ -45,7 +54,6 @@ namespace Capstone.Classes
             this.vendingMachine = vendingMachine;
             this.dataManager = dataManager;
             this.uiManager = uiManager;
-
         }
 
         public void RunInterface()
@@ -67,21 +75,10 @@ namespace Capstone.Classes
                         case UIAction.DisplayPurchasing:
                             action = uiManager.PrintPurchasingMenu();
                             break;
-                        case UIAction.PurchaseItem:
-                            selection = uiManager.CurrentSelection;
-                            if (selection != null)
-                            {
-                                vendingMachine.PurchaseItem(selection.Type, selection.Slot);
-                            }
+                        case UIAction.FeedMoney:
+                            int amount = uiManager.FeedMoneyRequest();
+                            vendingMachine.FeedMoney(amount);
                             action = UIAction.DisplayPurchasing;
-                            break;
-                        case UIAction.CheckItem:
-                            selection = uiManager.CurrentSelection;
-                            if (selection != null)
-                            {
-                                vendingMachine.CheckItem(selection.Type, selection.Slot);
-                            }
-                            action = UIAction.DisplayMainMenu;
                             break;
                         case UIAction.ReviewItems:
                             action = uiManager.PrintProductSelectionMenu(vendingMachine.GetAllItems(), UIAction.CheckItem);
@@ -89,14 +86,30 @@ namespace Capstone.Classes
                         case UIAction.DisplayItems:
                             action = uiManager.PrintProductSelectionMenu(vendingMachine.GetAllItems(), UIAction.PurchaseItem);
                             break;
-                        case UIAction.FeedMoney:
-                            int amount = uiManager.FeedMoneyRequest();
-                            vendingMachine.FeedMoney(amount);
+                        case UIAction.CheckItem:
+                            selection = uiManager.CurrentSelection;
+                            if (selection != null)
+                            {
+                                vendingMachine.CheckItem(selection.Type, selection.Slot);
+                            }
+                            // TODO: Add method to IUIManager that displays errors such as "no item selected", or "display item".
+                            action = UIAction.DisplayMainMenu;
+                            break;
+                        case UIAction.PurchaseItem:
+                            selection = uiManager.CurrentSelection;
+                            if (selection != null)
+                            {
+                                vendingMachine.PurchaseItem(selection.Type, selection.Slot);
+                            }
+                            // UNDONE: Add IUIManager dispensing method.
                             action = UIAction.DisplayPurchasing;
                             break;
                         case UIAction.FinishTransaction:
                             VendingMachineTransaction transaction = vendingMachine.FinishTransaction();
                             uiManager.PrintChangeConfirmation(transaction.Amount);
+                            break;
+                        case UIAction.Exit:
+                            done = true;
                             break;
                         case UIAction.SalesReport:
                             action = UIAction.DisplayMainMenu;
@@ -109,9 +122,6 @@ namespace Capstone.Classes
                                 .SelectMany(x => x).Where(x => x != null);
                             dataManager.GenerateSalesReport(items.ToList());
                             break;
-                        case UIAction.Exit:
-                            done = true;
-                            break;
                         default:
                             action = UIAction.DisplayMainMenu;
                             break;
@@ -119,6 +129,7 @@ namespace Capstone.Classes
                 }
                 catch (NotImplementedException e)
                 {
+                    // TODO: Move exception writing over to IUIManager.
                     Console.SetCursorPosition(2, 2);
                     Console.WriteLine("FUNCTIONALITY NOT IMPLEMENTED!");
                     Console.WriteLine(e.Message);
