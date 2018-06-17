@@ -23,6 +23,7 @@ namespace Capstone.Classes
 
         // Finish transaction.. transactions
         GiveChange,
+        GenerateSalesReport
     }
     public struct VendingMachineTransaction
     {
@@ -30,6 +31,9 @@ namespace Capstone.Classes
         public DateTime Timestamp { get; }
         public VendingMachineItem Item { get; }
         public decimal Amount { get; }
+
+        public VendingMachineTransaction(TransactionType type) :
+            this(type, 0, null) { }
 
         public VendingMachineTransaction(TransactionType type, decimal amount) : 
             this(type, amount, null) { }

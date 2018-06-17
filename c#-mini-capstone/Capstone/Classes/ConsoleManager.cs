@@ -105,6 +105,14 @@ namespace Capstone.Classes
             SetCursorPosition(0, 0);
         }
 
+        // This just prints out "Press Enter to Continue" in DarkGray.
+        private void PrintContinueMessage()
+        {
+            SetColor(DarkGray);
+            Write("Press Enter to Continue");
+            SetColor();
+        }
+
         // Sets current color based on BaseBG/FG.
         private void SetColor(bool hilite = false)
         {
@@ -516,7 +524,9 @@ namespace Capstone.Classes
         public int FeedMoneyRequest()
         {
             SetCursorPosition(4, 6);
+            SetColor(Gray);
             Write("What size bill would you like to enter? ");
+            SetColor();
             string response = ReadLine();
 
             bool parsed = int.TryParse(response, out int result);
@@ -526,11 +536,13 @@ namespace Capstone.Classes
                 SetCursorPosition(0, 6);
                 Write(new string(' ', WindowWidth));
                 SetCursorPosition(4, 6);
+                SetColor(Gray);
                 Write("What size bill would you like to enter? ");
                 SetCursorPosition(0, 7);
                 Write(new string(' ', WindowWidth));
                 SetCursorPosition(6, 7);
                 Write("That's not even a real number! Try again: ");
+                SetColor();
                 response = ReadLine();
                 parsed = int.TryParse(response, out result);
             }
@@ -542,14 +554,21 @@ namespace Capstone.Classes
         {
             PrintBalance();
             SetCursorPosition(4, 6);
+            SetColor(Gray);
 
             switch (transaction.Type)
             {
                 case TransactionType.FeedMoney:
-                    Write($"Yay Money! You gave me a {transaction.Amount.ToString("C")} bill!");
+                    Write($"Yay Money! You gave me a ");
+                    SetColor();
+                    Write($"{transaction.Amount.ToString("C")}");
+                    SetColor(Gray);
+                    Write(" bill!");
+                    SetCursorPosition(4, 7);
                     break;
                 case TransactionType.InvalidBill:
                     Write($"That isn't real money. What am I supposed to do with that?");
+                    SetCursorPosition(4, 7);
                     break;
                 case TransactionType.PurchaseItem:
                     //VendingMachineItem item = CurrentSelection;
@@ -569,6 +588,7 @@ namespace Capstone.Classes
                             Write("Chew Chew, Yum!");
                             break;
                     }
+                    SetCursorPosition(4, 7);
                     break;
                 case TransactionType.GiveChange:
                     if (transaction.Amount >= 0.05M)
@@ -619,6 +639,12 @@ namespace Capstone.Classes
                         }
                         if (coins[1] > 0)
                         {
+                            if (coins[0] > 0)
+                            {
+                                SetColor(Gray);
+                                Write("and ");
+                                SetColor();
+                            }
                             Write(coins[1]);
                             SetColor(Gray);
                             Write(" dime");
@@ -638,20 +664,28 @@ namespace Capstone.Classes
                         }
                         if (coins[2] > 0)
                         {
+                            if (coins[0] > 0 || coins[1] > 0)
+                            {
+                                SetColor(Gray);
+                                Write("and ");
+                                SetColor();
+                            }
                             Write(coins[2]);
                             SetColor(Gray);
                             Write(" nickle.");
                             SetColor();
                         }
                         SetCursorPosition(4, 7);
-                        SetColor(DarkGray);
-                        Write("Press Enter to Continue");
-
                     }
+                    break;
+                case TransactionType.GenerateSalesReport:
+                    Write("Generating Sales report!");
+                    SetCursorPosition(4, 7);
                     break;
                 default:
                     return;
             }
+            PrintContinueMessage();
             ReadLine();
         }
 
@@ -695,12 +729,8 @@ namespace Capstone.Classes
                 SetColor(Gray);
                 Write($" for purchase");
                 SetCursorPosition(10, 10);
-                SetColor(DarkGray);
-                Write("Press Enter to Continue");
-
-                SetColor();
             }
-
+            PrintContinueMessage();
             ReadLine();
         }
     }

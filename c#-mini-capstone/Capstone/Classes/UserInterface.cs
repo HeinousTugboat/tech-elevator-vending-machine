@@ -54,7 +54,7 @@ namespace Capstone.Classes
             this.vendingMachine = vendingMachine;
             this.dataManager = dataManager;
             this.uiManager = uiManager;
-            dataManager.WriteTransaction(new VendingMachineTransaction(TransactionType.MachineStart, 0), vendingMachine.CurrentBalance);
+            dataManager.WriteTransaction(new VendingMachineTransaction(TransactionType.MachineStart), vendingMachine.CurrentBalance);
         }
 
         public void RunInterface()
@@ -131,6 +131,7 @@ namespace Capstone.Classes
                             IEnumerable<VendingMachineItem> items = vendingMachine.GetAllItems().Values
                                 .SelectMany(x => x).Where(x => x != null);
                             dataManager.GenerateSalesReport(items.ToList());
+                            uiManager.PrintTransaction(new VendingMachineTransaction(TransactionType.GenerateSalesReport));
                             // TODO: Implement notification to UI Manager..
                             break;
                         default:
@@ -148,6 +149,7 @@ namespace Capstone.Classes
                     Console.ReadLine();
                 }
             }
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.SetCursorPosition(1, Console.WindowHeight - 1);
         }
     }
