@@ -514,13 +514,13 @@ namespace Capstone.Classes
 
         // Prints out specific comment on dispense depending on what type of item is purchased.
         public void PrintPurchaseConfirmation(VendingMachineItem item)
-        {   // TODO: Print correct purchase confirmation?
+        {   // UNDONE: Print correct purchase confirmation?
             throw new NotImplementedException();
         }
 
         // Calculates change based on amount provided by vending machine.
         public void PrintChangeConfirmation(decimal changeDispensed)
-        {   // TODO: Convert change into coins.
+        {   // UNDONE: Convert change into coins.
             throw new NotImplementedException();
         }
 
@@ -564,21 +564,76 @@ namespace Capstone.Classes
                     Write($"That isn't real money. What am I supposed to do with that?");
                     break;
                 case TransactionType.PurchaseItem:
-                    VendingMachineItem item = CurrentSelection;
-                    //VendingMachineItem item = transaction.Item;
+                    //VendingMachineItem item = CurrentSelection;
+                    VendingMachineItem item = transaction.Item;
                     switch (item.Type)
-                    {   // TODO: Implement correct messages.
+                    {
                         case ItemType.Candy:
+                            Write("Munch Munch, Yum!");
+                            break;
                         case ItemType.Chip:
+                            Write("Crunch Crunch, Yum!");
+                            break;
                         case ItemType.Drink:
+                            Write("Glug Glug, Yum!");
+                            break;
                         case ItemType.Gum:
-                            Write("Good job. You bought some shit.");
+                            Write("Chew Chew, Yum!");
                             break;
                     }
                     break;
                 default:
                     return;
             }
+            ReadLine();
+        }
+
+        public void PrintItemCheck(VendingMachineItem item)
+        {
+            PrintBalance();
+            SetCursorPosition(6, 6);
+
+            if (item == null)
+            {
+                SetColor(Gray);
+                Write("No item selected.");
+            }
+            else
+            {
+                SetColor(Green);
+                Write($"{(char)item.Type}{item.Slot}");
+                SetColor(DarkGray);
+                Write(": ");
+                SetColor();
+                Write($"{item.Name} ");
+                SetColor(DarkGray);
+                Write(" (");
+                SetColor(Gray);
+                Write(item.Type);
+                SetColor(DarkGray);
+                Write(")");
+                SetColor();
+
+                SetCursorPosition(6, 7);
+                SetColor(Gray);
+                Write("Cost");
+                SetColor(DarkGray);
+                Write(": ");
+                SetColor(item.Price > CurrentBalance ? Red : Green);
+                Write($"{ item.Price.ToString("C")}");
+
+                SetCursorPosition(10, 9);
+                SetColor(item.Price > CurrentBalance ? Red : Green);
+                Write($"{item.Quantity} available");
+                SetColor(Gray);
+                Write($" for purchase");
+                SetCursorPosition(10, 10);
+                SetColor(DarkGray);
+                Write("Press Enter to Continue");
+
+                SetColor();
+            }
+
             ReadLine();
         }
     }

@@ -65,9 +65,21 @@ namespace Capstone.Classes
         public void WriteTransaction(VendingMachineTransaction transaction, decimal currentBalance)
         {
             using (StreamWriter sw = new StreamWriter(LogFile, true))
-            {   // TODO: Add Item name to log
-                sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")} {currentBalance.ToString("C")}");
-            };
+            {
+                switch (transaction.Type)
+                {
+                    case TransactionType.MachineStart:
+                        sw.WriteLine();
+                        goto default;
+                    case TransactionType.PurchaseItem:
+                        VendingMachineItem item = transaction.Item;
+                        sw.WriteLine($"{transaction.Timestamp} {item.Name} {(char)item.Type}{item.Slot} {transaction.Amount.ToString("C")}\t\t{currentBalance.ToString("C")}");
+                        break;
+                    default:
+                        sw.WriteLine($"{transaction.Timestamp} {transaction.Type} {transaction.Amount.ToString("C")}\t\t{currentBalance.ToString("C")}");
+                        break;
+                }
+            }
         }
 
         public void GenerateSalesReport(List<VendingMachineItem> items)

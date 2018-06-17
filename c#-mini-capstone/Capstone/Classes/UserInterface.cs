@@ -40,6 +40,7 @@ namespace Capstone.Classes
         UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction defaultAction);
         int FeedMoneyRequest();
         void PrintPurchaseConfirmation(VendingMachineItem item);
+        void PrintItemCheck(VendingMachineItem item);
         void PrintChangeConfirmation(decimal changeDispensed);
         void PrintTransaction(VendingMachineTransaction transaction);
     }
@@ -55,6 +56,7 @@ namespace Capstone.Classes
             this.vendingMachine = vendingMachine;
             this.dataManager = dataManager;
             this.uiManager = uiManager;
+            dataManager.WriteTransaction(new VendingMachineTransaction(TransactionType.MachineStart, 0), vendingMachine.CurrentBalance);
         }
 
         public void RunInterface()
@@ -93,11 +95,12 @@ namespace Capstone.Classes
                             break;
                         case UIAction.CheckItem:
                             selection = uiManager.CurrentSelection;
+                            VendingMachineItem item = null;
                             if (selection != null)
                             {
-                                vendingMachine.CheckItem(selection.Type, selection.Slot);
+                                item = vendingMachine.CheckItem(selection.Type, selection.Slot);
                             }
-                            // TODO: Add method to IUIManager that displays errors such as "no item selected", or "display item".
+                            uiManager.PrintItemCheck(item);
                             action = UIAction.DisplayMainMenu;
                             break;
                         case UIAction.PurchaseItem:

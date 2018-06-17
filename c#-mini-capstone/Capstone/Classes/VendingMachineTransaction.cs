@@ -8,6 +8,9 @@ namespace Capstone.Classes
 {
     public enum TransactionType
     {
+        // Transaction to print when vending machine starts
+        MachineStart,
+
         // Feed money transactions
         FeedMoney,
         InvalidBill,
