@@ -334,6 +334,7 @@ namespace Capstone.Classes
         // Method called by UserInterface to display inventory list, update selected item, and return an action.
         public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction actionToTake)
         {
+            // UNDONE: Disambiguate purchase menu from check menu.
             PrintBalance();
             int selectedRow = 0;
             int selectedColumn = 0;
@@ -392,7 +393,7 @@ namespace Capstone.Classes
 
                         if (item != null)
                         {
-
+                            // UNDONE: Requirements 5a, b and d.
                             SetColor(activeColumn && activeRow);
                             Write(item.Quantity + "x " + item.Name + "  " + item.Price.ToString("C"));
                         }
@@ -571,7 +572,6 @@ namespace Capstone.Classes
                     SetCursorPosition(4, 7);
                     break;
                 case TransactionType.PurchaseItem:
-                    //VendingMachineItem item = CurrentSelection;
                     VendingMachineItem item = transaction.Item;
                     switch (item.Type)
                     {
@@ -590,6 +590,10 @@ namespace Capstone.Classes
                     }
                     SetCursorPosition(4, 7);
                     break;
+                    // UNDONE: Implement Invalid Purchase and NSF Transactions
+                case TransactionType.InvalidPurchase:
+                case TransactionType.NotSufficientFunds:
+                    throw new NotImplementedException();
                 case TransactionType.GiveChange:
                     if (transaction.Amount >= 0.05M)
                     {
@@ -683,7 +687,7 @@ namespace Capstone.Classes
                     SetCursorPosition(4, 7);
                     break;
                 default:
-                    return;
+                    throw new NotImplementedException(transaction.Type.ToString());
             }
             PrintContinueMessage();
             ReadLine();
@@ -698,6 +702,7 @@ namespace Capstone.Classes
             {
                 SetColor(Gray);
                 Write("No item selected.");
+                SetCursorPosition(6, 7);
             }
             else
             {
