@@ -26,7 +26,6 @@ namespace Capstone.Classes
         public DataManager(string logFile)
         {
             LogFile = logFile;
-            // TODO: Print out vending machine starting up in log.
         }
 
         public List<VendingMachineItem> LoadItems(string filename)

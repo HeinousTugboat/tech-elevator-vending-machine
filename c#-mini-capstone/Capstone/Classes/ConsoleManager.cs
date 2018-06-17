@@ -512,18 +512,6 @@ namespace Capstone.Classes
             return LastAction;
         }
 
-        // Prints out specific comment on dispense depending on what type of item is purchased.
-        public void PrintPurchaseConfirmation(VendingMachineItem item)
-        {   // UNDONE: Print correct purchase confirmation?
-            throw new NotImplementedException();
-        }
-
-        // Calculates change based on amount provided by vending machine.
-        public void PrintChangeConfirmation(decimal changeDispensed)
-        {   // UNDONE: Convert change into coins.
-            throw new NotImplementedException();
-        }
-
         // Displays the feed money menu and returns amount fed.
         public int FeedMoneyRequest()
         {
@@ -580,6 +568,85 @@ namespace Capstone.Classes
                         case ItemType.Gum:
                             Write("Chew Chew, Yum!");
                             break;
+                    }
+                    break;
+                case TransactionType.GiveChange:
+                    if (transaction.Amount >= 0.05M)
+                    {
+                        int[] coins = { 0, 0, 0 };
+                        decimal total = transaction.Amount;
+
+                        while (total >= 0.05M)
+                        {
+                            if (total >= 0.25M)
+                            {
+                                ++coins[0];
+                                total -= 0.25M;
+                            }
+                            else if (total >= 0.10M)
+                            {
+                                ++coins[1];
+                                total -= 0.10M;
+                            }
+                            else if (total >= 0.05M)
+                            {
+                                ++coins[2];
+                                total -= 0.05M;
+                            }
+
+                        }
+                        SetColor(Gray);
+                        Write($"You receive ");
+                        SetColor();
+                        if (coins[0] > 0)
+                        {
+                            Write(coins[0]);
+                            SetColor(Gray);
+                            Write(" quarter");
+                            if (coins[0] > 1)
+                            {
+                                Write("s");
+                            }
+                            if (coins[1] > 0 || coins[2] > 0)
+                            {
+                                Write(", ");
+                            }
+                            else
+                            {
+                                Write(".");
+                            }
+                            SetColor();
+                        }
+                        if (coins[1] > 0)
+                        {
+                            Write(coins[1]);
+                            SetColor(Gray);
+                            Write(" dime");
+                            if (coins[1] > 1)
+                            {
+                                Write("s");
+                            }
+                            if (coins[2] > 0)
+                            {
+                                Write(", ");
+                            }
+                            else
+                            {
+                                Write(".");
+                            }
+                            SetColor();
+                        }
+                        if (coins[2] > 0)
+                        {
+                            Write(coins[2]);
+                            SetColor(Gray);
+                            Write(" nickle.");
+                            SetColor();
+                        }
+                        SetCursorPosition(4, 7);
+                        SetColor(DarkGray);
+                        Write("Press Enter to Continue");
+
                     }
                     break;
                 default:

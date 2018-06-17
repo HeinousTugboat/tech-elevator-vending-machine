@@ -39,9 +39,7 @@ namespace Capstone.Classes
         UIAction PrintPurchasingMenu();
         UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction defaultAction);
         int FeedMoneyRequest();
-        void PrintPurchaseConfirmation(VendingMachineItem item);
         void PrintItemCheck(VendingMachineItem item);
-        void PrintChangeConfirmation(decimal changeDispensed);
         void PrintTransaction(VendingMachineTransaction transaction);
     }
 
@@ -117,7 +115,8 @@ namespace Capstone.Classes
                         case UIAction.FinishTransaction:
                             transaction = vendingMachine.FinishTransaction();
                             dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
-                            uiManager.PrintChangeConfirmation(transaction.Amount);
+                            uiManager.PrintTransaction(transaction);
+                            action = UIAction.DisplayMainMenu;
                             break;
                         case UIAction.Exit:
                             done = true;
