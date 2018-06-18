@@ -349,6 +349,17 @@ namespace Capstone.Classes
 
             while (isCurrentlyInMenu)
             {
+                SetColor(Gray);
+                SetCursorPosition(tablePadding + 4, 1);
+                Write("A) Chips");
+                SetCursorPosition(tablePadding + 4, 13);
+                Write("C) Drinks");
+                SetCursorPosition((WindowWidth - 2 * tablePadding) / 2 + 4, 1);
+                Write("B) Candy");
+                SetCursorPosition((WindowWidth - 2 * tablePadding) / 2 + 4, 13);
+                Write("D) Gum");
+                SetColor();
+
                 foreach (KeyValuePair<ItemType, VendingMachineItem[]> itemList in items)
                 {
                     bool activeColumn = false;
@@ -393,9 +404,19 @@ namespace Capstone.Classes
 
                         if (item != null)
                         {
-                            // UNDONE: Requirements 5a, b and d.
                             SetColor(activeColumn && activeRow);
-                            Write(item.Quantity + "x " + item.Name + "  " + item.Price.ToString("C"));
+                            if (item.Quantity > 0)
+                            {
+                                Write((item.Slot + 1) % 10 + ") " + item.Quantity + "x " + item.Name + "  " + item.Price.ToString("C"));
+                            }
+                            else
+                            {
+                                Write((item.Slot + 1) % 10 + ") ");
+                                SetColor(DarkRed);
+                                Write("SOLD OUT ");
+                                SetColor(activeColumn && activeRow);
+                                Write(item.Name + "  " + item.Price.ToString("C"));
+                            }
                         }
                         else
                         {
@@ -590,7 +611,7 @@ namespace Capstone.Classes
                     }
                     SetCursorPosition(4, 7);
                     break;
-                    // UNDONE: Implement Invalid Purchase and NSF Transactions
+                // UNDONE: Implement Invalid Purchase and NSF Transactions
                 case TransactionType.InvalidPurchase:
                 case TransactionType.NotSufficientFunds:
                     throw new NotImplementedException();
@@ -729,10 +750,19 @@ namespace Capstone.Classes
                 Write($"{ item.Price.ToString("C")}");
 
                 SetCursorPosition(10, 9);
-                SetColor(item.Price > CurrentBalance ? Red : Green);
-                Write($"{item.Quantity} available");
-                SetColor(Gray);
-                Write($" for purchase");
+                if (item.Quantity > 0)
+                {
+                    SetColor(item.Price > CurrentBalance ? Red : Green);
+                    Write($"{item.Quantity} available");
+                    SetColor(Gray);
+                    Write($" for purchase");
+                }
+                else
+                {
+                    SetColor(DarkRed);
+                    Write("SOLD OUT");
+                    SetColor(Gray);
+                }
                 SetCursorPosition(10, 10);
             }
             PrintContinueMessage();
