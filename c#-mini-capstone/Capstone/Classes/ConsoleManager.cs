@@ -333,7 +333,6 @@ namespace Capstone.Classes
         // Method called by UserInterface to display inventory list, update selected item, and return an action.
         public UIAction PrintProductSelectionMenu(Dictionary<ItemType, VendingMachineItem[]> items, UIAction actionToTake)
         {
-            // UNDONE: Disambiguate purchase menu from check menu.
             PrintBalance();
             int selectedRow = 0;
             int selectedColumn = 0;
@@ -348,7 +347,19 @@ namespace Capstone.Classes
 
             while (isCurrentlyInMenu)
             {
-                SetColor(Gray);
+                SetCursorPosition(tablePadding * 3, 0);
+                switch(actionToTake)
+                {
+                    case UIAction.CheckItem:
+                        SetColor(DarkGray);
+                        Write("This is where the things are! Check'em out!");
+                        break;
+                    case UIAction.PurchaseItem:
+                        SetColor(Gray);
+                        Write("This is where the food lives! Come get you one!");
+                        break;
+                }
+                SetColor(DarkGreen);
                 SetCursorPosition(tablePadding + 4, 1);
                 Write("A) Chips");
                 SetCursorPosition(tablePadding + 4, 13);
