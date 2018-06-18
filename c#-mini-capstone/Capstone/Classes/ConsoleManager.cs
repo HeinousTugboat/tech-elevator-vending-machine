@@ -22,7 +22,9 @@ namespace Capstone.Classes
         public decimal CurrentBalance { get; set; }
 
         // Used to pass whatever's currently selected *out* to the UI.
-        public VendingMachineItem CurrentSelection { get; private set; }
+        //public VendingMachineItem CurrentSelection { get; private set; }
+        public ItemType CurrentType { get; private set; }
+        public int CurrentSlot { get; private set; }
 
         // Default window colors, can be whatever. Normally White on Black.
         private readonly ConsoleColor BaseFG = White;
@@ -75,11 +77,7 @@ namespace Capstone.Classes
             string balanceAmount = CurrentBalance.ToString("C");
             string selection = "";
             string selectionName = "";
-            if (CurrentSelection != null)
-            {
-                selection = "Selection: ";
-                selectionName = CurrentSelection.Name;
-            }
+
             SetCursorPosition(WindowWidth - (balance.Length + 1 + balanceAmount.Length + selection.Length + selectionName.Length), WindowHeight - 1);
             SetColor(Gray);
             Write(selection);
@@ -111,6 +109,7 @@ namespace Capstone.Classes
             SetColor(DarkGray);
             Write("Press Enter to Continue");
             SetColor();
+            ReadLine();
         }
 
         // Sets current color based on BaseBG/FG.
@@ -400,6 +399,8 @@ namespace Capstone.Classes
                         if (activeColumn && activeRow)
                         {
                             selectedItem = item;
+                            CurrentType = itemList.Key;
+                            CurrentSlot = currentRow;
                         }
 
                         if (item != null)
@@ -532,7 +533,6 @@ namespace Capstone.Classes
                         break;
                     case ConsoleKey.Enter:
                     case ConsoleKey.Spacebar:
-                        CurrentSelection = selectedItem;
                         LastAction = actionToTake;
                         isCurrentlyInMenu = false;
                         break;
@@ -611,10 +611,24 @@ namespace Capstone.Classes
                     }
                     SetCursorPosition(4, 7);
                     break;
-                // UNDONE: Implement Invalid Purchase and NSF Transactions
                 case TransactionType.InvalidPurchase:
+                    Write("There's nothing there for you to buy.");
+                    SetCursorPosition(4, 7);
+                    Write("You can't buy that.");
+                    SetCursorPosition(4, 8);
+                    Write("Buy something else.");
+                    SetCursorPosition(4, 9);
+                    break;
                 case TransactionType.NotSufficientFunds:
-                    throw new NotImplementedException();
+                    Write("I get that you'd like that,");
+                    SetCursorPosition(6, 7);
+                    Write("but sadly..");
+                    SetCursorPosition(8, 8);
+                    Write("you can't afford it.");
+                    SetCursorPosition(4, 10);
+                    Write("Insert additional cash or try something different.");
+                    SetCursorPosition(4, 11);
+                    break;
                 case TransactionType.GiveChange:
                     if (transaction.Amount >= 0.05M)
                     {
@@ -664,7 +678,7 @@ namespace Capstone.Classes
                         }
                         if (coins[1] > 0)
                         {
-                            if (coins[0] > 0)
+                            if (coins[0] > 0 && coins[2] == 0)
                             {
                                 SetColor(Gray);
                                 Write("and ");
@@ -711,7 +725,6 @@ namespace Capstone.Classes
                     throw new NotImplementedException(transaction.Type.ToString());
             }
             PrintContinueMessage();
-            ReadLine();
         }
 
         public void PrintItemCheck(VendingMachineItem item)
@@ -766,7 +779,19 @@ namespace Capstone.Classes
                 SetCursorPosition(10, 10);
             }
             PrintContinueMessage();
-            ReadLine();
+        }
+
+        public void PrintException(Exception e)
+        {
+            PrintBalance();
+            SetCursorPosition(6, 6);
+            SetColor(DarkRed);
+            Write("**WARNING** ");
+            SetColor(Gray);
+            Write("Oh. Something's gone very wrong.");
+            SetCursorPosition(6, 9);
+            Write(e.Message);
+            PrintContinueMessage();
         }
     }
 }

@@ -33,7 +33,8 @@ namespace Capstone.Classes
     public interface IUIManager
     {
         decimal CurrentBalance { get; set; }
-        VendingMachineItem CurrentSelection { get; }
+        ItemType CurrentType { get; }
+        int CurrentSlot { get; }
 
         UIAction PrintMainMenu();
         UIAction PrintPurchasingMenu();
@@ -41,6 +42,7 @@ namespace Capstone.Classes
         int FeedMoneyRequest();
         void PrintItemCheck(VendingMachineItem item);
         void PrintTransaction(VendingMachineTransaction transaction);
+        void PrintException(Exception e);
     }
 
     public class UserInterface
@@ -65,7 +67,6 @@ namespace Capstone.Classes
             while (!done)
             {
                 uiManager.CurrentBalance = vendingMachine.CurrentBalance;
-                VendingMachineItem selection = uiManager.CurrentSelection;
                 VendingMachineTransaction transaction;
                 try
                 {
@@ -92,24 +93,16 @@ namespace Capstone.Classes
                             action = uiManager.PrintProductSelectionMenu(vendingMachine.GetAllItems(), UIAction.PurchaseItem);
                             break;
                         case UIAction.CheckItem:
-                            selection = uiManager.CurrentSelection;
                             VendingMachineItem item = null;
-                            if (selection != null)
-                            {
-                                item = vendingMachine.CheckItem(selection.Type, selection.Slot);
-                            }
+                            item = vendingMachine.CheckItem(uiManager.CurrentType, uiManager.CurrentSlot);
                             uiManager.PrintItemCheck(item);
                             action = UIAction.DisplayMainMenu;
                             break;
                         case UIAction.PurchaseItem:
-                            selection = uiManager.CurrentSelection;
-                            if (selection != null)
-                            {
-                                transaction = vendingMachine.PurchaseItem(selection.Type, selection.Slot);
-                                dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
-                                uiManager.CurrentBalance = vendingMachine.CurrentBalance;
-                                uiManager.PrintTransaction(transaction);
-                            }
+                            transaction = vendingMachine.PurchaseItem(uiManager.CurrentType, uiManager.CurrentSlot);
+                            dataManager.WriteTransaction(transaction, vendingMachine.CurrentBalance);
+                            uiManager.CurrentBalance = vendingMachine.CurrentBalance;
+                            uiManager.PrintTransaction(transaction);
                             action = UIAction.DisplayPurchasing;
                             break;
                         case UIAction.FinishTransaction:
@@ -132,21 +125,16 @@ namespace Capstone.Classes
                                 .SelectMany(x => x).Where(x => x != null);
                             dataManager.GenerateSalesReport(items.ToList());
                             uiManager.PrintTransaction(new VendingMachineTransaction(TransactionType.GenerateSalesReport));
-                            // TODO: Implement notification to UI Manager..
                             break;
                         default:
                             action = UIAction.DisplayMainMenu;
                             break;
                     }
                 }
-                catch (NotImplementedException e)
+                catch (Exception e)
                 {
-                    // TODO: Move exception writing over to IUIManager.
-                    Console.SetCursorPosition(2, 2);
-                    Console.WriteLine("FUNCTIONALITY NOT IMPLEMENTED!");
-                    Console.WriteLine(e.Message);
+                    uiManager.PrintException(e);
                     action = UIAction.DisplayMainMenu;
-                    Console.ReadLine();
                 }
             }
             Console.ForegroundColor = ConsoleColor.Gray;
