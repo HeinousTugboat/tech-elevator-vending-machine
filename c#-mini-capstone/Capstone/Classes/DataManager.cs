@@ -44,9 +44,9 @@ namespace Capstone.Classes
                         decimal price = decimal.Parse(line[2]);
 
                         // Shift slots down 1 and treat slot 0 as 10. Example data is 1-indexed.
-                        if (--slot == -1)
+                        if (--slot < 0)
                         {
-                            slot = 0;
+                            slot = 9;
                         }
 
                         VendingMachineItem item = new VendingMachineItem(name, price, type, slot);

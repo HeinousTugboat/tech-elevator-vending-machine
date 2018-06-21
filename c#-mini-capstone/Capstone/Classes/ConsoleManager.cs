@@ -348,7 +348,7 @@ namespace Capstone.Classes
             while (isCurrentlyInMenu)
             {
                 SetCursorPosition(tablePadding * 3, 0);
-                switch(actionToTake)
+                switch (actionToTake)
                 {
                     case UIAction.CheckItem:
                         SetColor(DarkGray);
@@ -412,6 +412,8 @@ namespace Capstone.Classes
                             selectedItem = item;
                             CurrentType = itemList.Key;
                             CurrentSlot = currentRow;
+                            if (CurrentSlot >= 10)
+                                CurrentSlot -= 10;
                         }
 
                         if (item != null)
@@ -640,6 +642,10 @@ namespace Capstone.Classes
                     Write("Insert additional cash or try something different.");
                     SetCursorPosition(4, 11);
                     break;
+                case TransactionType.ItemOutOfStock:
+                    Write("I'm sorry, we're all out of that!");
+                    SetCursorPosition(4, 8);
+                    break;
                 case TransactionType.GiveChange:
                     if (transaction.Amount >= 0.05M)
                     {
@@ -752,7 +758,14 @@ namespace Capstone.Classes
             else
             {
                 SetColor(Green);
-                Write($"{(char)item.Type}{item.Slot}");
+                if (item.Slot == 9)
+                {
+                    Write($"{(char)item.Type}0");
+                }
+                else
+                {
+                    Write($"{(char)item.Type}{item.Slot + 1}");
+                }
                 SetColor(DarkGray);
                 Write(": ");
                 SetColor();
@@ -800,8 +813,9 @@ namespace Capstone.Classes
             Write("**WARNING** ");
             SetColor(Gray);
             Write("Oh. Something's gone very wrong.");
-            SetCursorPosition(6, 9);
+            SetCursorPosition(6, 8);
             Write(e.Message);
+            SetCursorPosition(6, 9);
             PrintContinueMessage();
         }
     }
